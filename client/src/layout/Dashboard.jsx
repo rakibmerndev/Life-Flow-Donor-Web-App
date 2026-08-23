@@ -14,14 +14,14 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { BsPersonFillDown } from "react-icons/bs";
+import { FaHistory } from "react-icons/fa";
 import { FaBlogger, FaUsers } from "react-icons/fa6";
+import { IoIosCreate } from "react-icons/io";
 import { VscGitPullRequestGoToChanges } from "react-icons/vsc";
 import { Link, Outlet } from "react-router-dom";
 import useAdmin from "../hooks/useAdmin.js";
 import useCurrentUser from "../hooks/useCurrentUser.js";
-import { FaHistory } from "react-icons/fa";
-import { IoIosCreate } from "react-icons/io";
-import { BsPersonFillDown } from "react-icons/bs";
 const drawerWidth = 240;
 
 function Dashboard(props) {
@@ -94,7 +94,7 @@ function Dashboard(props) {
               <Divider />
 
               <div>
-                <Link to=" /dashboard/content-management">
+                <Link to="/dashboard/content-management">
                   <ListItem disablePadding>
                     <ListItemButton>
                       <div>
@@ -135,7 +135,7 @@ function Dashboard(props) {
                     <ListItemButton>
                       <div>
                         <ListItemIcon>
-                          <FaUsers  className="text-xl"/>
+                          <FaUsers className="text-xl" />
                         </ListItemIcon>
                       </div>
                       <h1>All Users</h1>
@@ -167,7 +167,7 @@ function Dashboard(props) {
                     <ListItemButton>
                       <div>
                         <ListItemIcon>
-                        <FaBlogger className="text-xl" />
+                          <FaBlogger className="text-xl" />
                         </ListItemIcon>
                       </div>
                       <h1>Content Management</h1>
@@ -201,7 +201,7 @@ function Dashboard(props) {
                 <ListItemButton>
                   <div>
                     <ListItemIcon>
-                    <BsPersonFillDown className="text-xl" />
+                      <BsPersonFillDown className="text-xl" />
                     </ListItemIcon>
                   </div>
                   <h1>My Requests</h1>
@@ -234,7 +234,7 @@ function Dashboard(props) {
             <ListItemButton>
               <div>
                 <ListItemIcon>
-                  <FaHistory className="text-xl"/>
+                  <FaHistory className="text-xl" />
                 </ListItemIcon>
               </div>
               <h1>Donation History</h1>
@@ -247,7 +247,9 @@ function Dashboard(props) {
       <div className="text-center mt-10">
         <List>
           <Link to="/">
-            <button className="btn text-center btn-sm bg-red-600 hover:bg-red-700 text-white border-none">Go Back to home</button>
+            <button className="btn text-center btn-sm bg-red-600 hover:bg-red-700 text-white border-none">
+              Go Back to home
+            </button>
           </Link>
         </List>
       </div>
@@ -259,7 +261,7 @@ function Dashboard(props) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: "flex", backgroundColor: '#f3f4f6' }}>
+    <Box sx={{ display: "flex", backgroundColor: "#f3f4f6" }}>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -302,7 +304,7 @@ function Dashboard(props) {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
-              backgroundColor: '#f9fafb',
+              backgroundColor: "#f9fafb",
             },
           }}
         >
@@ -315,7 +317,7 @@ function Dashboard(props) {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
-              backgroundColor: '#f9fafb',
+              backgroundColor: "#f9fafb",
             },
           }}
           open
