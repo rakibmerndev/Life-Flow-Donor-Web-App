@@ -41,6 +41,7 @@ const RequestDetails = () => {
     const res = await axiosSecure.patch(`/status/${params.id}`, updatedData);
 
     if (res.data.modifiedCount > 0) {
+      refetch();
       Swal.fire({
         position: "top-end",
         icon: "success",
@@ -49,7 +50,6 @@ const RequestDetails = () => {
         timer: 1500,
       });
       onclose();
-      refetch();
     }
   };
   return (
