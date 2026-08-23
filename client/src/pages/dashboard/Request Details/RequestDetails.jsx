@@ -8,7 +8,8 @@ import useParticularRequest from "../../../hooks/useParticularRequest.js";
 
 const RequestDetails = () => {
   const { user } = useAuth();
-  const { requests, refetch } = useParticularRequest();
+  // No need for = {} here - already handled in the hook
+  const { requests, refetch, isLoading } = useParticularRequest();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const params = useParams();
   const axiosSecure = useAxiosSecure();
@@ -40,6 +41,7 @@ const RequestDetails = () => {
   };
 
   const getStatusColor = (status) => {
+    if (!status) return "bg-gray-100 text-gray-800";
     switch (status) {
       case "pending":
         return "bg-yellow-100 text-yellow-800";
@@ -53,6 +55,40 @@ const RequestDetails = () => {
         return "bg-gray-100 text-gray-800";
     }
   };
+
+  const getStatusLabel = (status) => {
+    if (!status) return "Unknown";
+    if (status === "inprogress") return "In Progress";
+    return status.charAt(0).toUpperCase() + status.slice(1);
+  };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="bg-gray-50 min-h-screen p-4 md:p-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-red-600 border-t-transparent"></div>
+          <p className="text-gray-600 mt-4">Loading request details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state - check if request data exists
+  if (!requests || Object.keys(requests).length === 0) {
+    return (
+      <div className="bg-gray-50 min-h-screen p-4 md:p-8">
+        <Helmet>
+          <title>LifeFlowDonor | Request Details</title>
+        </Helmet>
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+            <p className="text-lg text-gray-600">Request not found</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-50 min-h-screen p-4 md:p-8">
@@ -85,7 +121,7 @@ const RequestDetails = () => {
                   Name
                 </p>
                 <p className="text-lg text-gray-800 mt-1">
-                  {requests.requester}
+                  {requests?.requester || "N/A"}
                 </p>
               </div>
               <div>
@@ -93,7 +129,7 @@ const RequestDetails = () => {
                   Email
                 </p>
                 <p className="text-lg text-gray-800 mt-1">
-                  {requests.requesterEmail}
+                  {requests?.requesterEmail || "N/A"}
                 </p>
               </div>
             </div>
@@ -114,7 +150,7 @@ const RequestDetails = () => {
                   Name
                 </p>
                 <p className="text-lg text-gray-800 mt-1">
-                  {requests.recipientName}
+                  {requests?.recipientName || "N/A"}
                 </p>
               </div>
               <div>
@@ -123,7 +159,7 @@ const RequestDetails = () => {
                 </p>
                 <div className="mt-1">
                   <span className="inline-block px-4 py-2 rounded-full bg-red-100 text-red-800 font-bold text-lg">
-                    {requests.requiredBloodGroup}
+                    {requests?.requiredBloodGroup || "N/A"}
                   </span>
                 </div>
               </div>
@@ -143,7 +179,7 @@ const RequestDetails = () => {
                   Donation Date
                 </p>
                 <p className="text-lg text-gray-800 mt-1">
-                  {requests.donationDate}
+                  {requests?.donationDate || "N/A"}
                 </p>
               </div>
               <div>
@@ -151,7 +187,7 @@ const RequestDetails = () => {
                   Donation Time
                 </p>
                 <p className="text-lg text-gray-800 mt-1">
-                  {requests.donationTime}
+                  {requests?.donationTime || "N/A"}
                 </p>
               </div>
             </div>
@@ -161,7 +197,7 @@ const RequestDetails = () => {
                 Hospital Name
               </p>
               <p className="text-lg text-gray-800 mt-1">
-                {requests.hospitalName}
+                {requests?.hospitalName || "N/A"}
               </p>
             </div>
           </div>
@@ -179,7 +215,7 @@ const RequestDetails = () => {
                   Area
                 </p>
                 <p className="text-lg text-gray-800 mt-1">
-                  {requests.upazila}, {requests.district}
+                  {requests?.upazila}, {requests?.district || "N/A"}
                 </p>
               </div>
             </div>
@@ -189,7 +225,7 @@ const RequestDetails = () => {
                 Full Address
               </p>
               <p className="text-lg text-gray-800 mt-1">
-                {requests.fullAddress}
+                {requests?.fullAddress || "N/A"}
               </p>
             </div>
           </div>
@@ -201,7 +237,9 @@ const RequestDetails = () => {
             <h2 className="text-xl font-bold text-white">Request Message</h2>
           </div>
           <div className="p-6">
-            <p className="text-gray-700 leading-relaxed">{requests.message}</p>
+            <p className="text-gray-700 leading-relaxed">
+              {requests?.message || "No message provided"}
+            </p>
           </div>
         </div>
 
@@ -218,18 +256,15 @@ const RequestDetails = () => {
               <div className="mt-2">
                 <span
                   className={`inline-block px-4 py-2 rounded-full text-sm font-semibold ${getStatusColor(
-                    requests.donationStatus,
+                    requests?.donationStatus
                   )}`}
                 >
-                  {requests.donationStatus === "inprogress"
-                    ? "In Progress"
-                    : requests.donationStatus.charAt(0).toUpperCase() +
-                      requests.donationStatus.slice(1)}
+                  {getStatusLabel(requests?.donationStatus)}
                 </span>
               </div>
             </div>
 
-            {requests.donorName || requests.donorEmail ? (
+            {requests?.donorName || requests?.donorEmail ? (
               <div className="border-t pt-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   Assigned Donor
@@ -240,7 +275,7 @@ const RequestDetails = () => {
                       Name
                     </p>
                     <p className="text-lg text-gray-800 mt-1">
-                      {requests.donorName || "Not assigned"}
+                      {requests?.donorName || "Not assigned"}
                     </p>
                   </div>
                   <div>
@@ -248,7 +283,7 @@ const RequestDetails = () => {
                       Email
                     </p>
                     <p className="text-lg text-gray-800 mt-1">
-                      {requests.donorEmail || "Not assigned"}
+                      {requests?.donorEmail || "Not assigned"}
                     </p>
                   </div>
                 </div>
@@ -262,7 +297,7 @@ const RequestDetails = () => {
         </div>
 
         {/* Donate Button */}
-        {requests.donationStatus === "pending" && (
+        {requests?.donationStatus === "pending" && (
           <button
             onClick={() => setIsModalOpen(true)}
             className="w-full py-3 px-6 rounded-md bg-red-600 hover:bg-red-700 text-white font-bold text-lg transition-colors mb-8"
@@ -293,14 +328,16 @@ const RequestDetails = () => {
                     Your Name
                   </p>
                   <p className="text-lg text-gray-800 mt-1">
-                    {user?.displayName}
+                    {user?.displayName || "N/A"}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
                     Your Email
                   </p>
-                  <p className="text-lg text-gray-800 mt-1">{user?.email}</p>
+                  <p className="text-lg text-gray-800 mt-1">
+                    {user?.email || "N/A"}
+                  </p>
                 </div>
               </div>
 

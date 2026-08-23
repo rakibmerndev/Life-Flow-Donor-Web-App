@@ -4,8 +4,8 @@ import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAxiosPublic from "../../../hooks/useAxiosPublic.js";
-import useCurrentUser from "../../../hooks/useCurrentUser.js";
 import useAxiosSecure from "../../../hooks/useAxiosSecure.js";
+import useCurrentUser from "../../../hooks/useCurrentUser.js";
 
 const AllBgRequests = () => {
   const axiosPublic = useAxiosPublic();
@@ -68,7 +68,7 @@ const AllBgRequests = () => {
   };
 
   const filteredRequest = allRequests.filter(
-    (request) => status === "" || request.donationStatus === status
+    (request) => status === "" || request.donationStatus === status,
   );
 
   return (
@@ -109,7 +109,8 @@ const AllBgRequests = () => {
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="bg-red-600 px-6 py-4">
           <h2 className="text-xl font-bold text-white">
-            {filteredRequest.length} {filteredRequest.length === 1 ? "Request" : "Requests"} Found
+            {filteredRequest.length}{" "}
+            {filteredRequest.length === 1 ? "Request" : "Requests"} Found
           </h2>
         </div>
 
@@ -118,7 +119,9 @@ const AllBgRequests = () => {
             <table className="w-full">
               <thead className="bg-gray-100 border-b border-gray-300">
                 <tr>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">#</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                    #
+                  </th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
                     Recipient Name
                   </th>
@@ -144,7 +147,10 @@ const AllBgRequests = () => {
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {filteredRequest.map((request, index) => (
-                  <tr key={request._id} className="hover:bg-gray-50 transition-colors">
+                  <tr
+                    key={request._id}
+                    className="hover:bg-gray-50 transition-colors"
+                  >
                     <td className="px-6 py-4 text-sm font-semibold text-gray-900">
                       {index + 1}
                     </td>
@@ -162,7 +168,9 @@ const AllBgRequests = () => {
                     <td className="px-6 py-4 text-sm text-gray-800">
                       <div>
                         <p>{request.donationDate}</p>
-                        <p className="text-xs text-gray-500">{request.donationTime}</p>
+                        <p className="text-xs text-gray-500">
+                          {request.donationTime}
+                        </p>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm">
@@ -171,10 +179,10 @@ const AllBgRequests = () => {
                           request.donationStatus === "pending"
                             ? "bg-yellow-100 text-yellow-800"
                             : request.donationStatus === "inprogress"
-                            ? "bg-blue-100 text-blue-800"
-                            : request.donationStatus === "done"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
+                              ? "bg-blue-100 text-blue-800"
+                              : request.donationStatus === "done"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
                         }`}
                       >
                         {request.donationStatus === "inprogress"
@@ -194,7 +202,9 @@ const AllBgRequests = () => {
                           </p>
                         </div>
                       ) : (
-                        <span className="text-gray-500">Not assigned</span>
+                        <span className="text-gray-500">
+                          {request.donorName || "Not assigned"}{" "}
+                        </span>
                       )}
                     </td>
                     <td className="px-6 py-4">
@@ -254,8 +264,10 @@ const AllBgRequests = () => {
         {filteredRequest.length > 0 && (
           <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
             <p className="text-sm text-gray-600">
-              Showing <span className="font-semibold">{filteredRequest.length}</span> of{" "}
-              <span className="font-semibold">{allRequests.length}</span> total requests
+              Showing{" "}
+              <span className="font-semibold">{filteredRequest.length}</span> of{" "}
+              <span className="font-semibold">{allRequests.length}</span> total
+              requests
             </p>
           </div>
         )}
