@@ -98,162 +98,179 @@ const Profile = () => {
   const loggedInUser = currentUser[0];
 
   return (
-    <div>
+    <div className="bg-gray-50 min-h-screen p-4 md:p-8">
       <Helmet>
         <title>LifeFlowDonor | Profile</title>
       </Helmet>
-      <div>
-        <div className="flex flex-col md:flex-row gap-10">
+
+      {/* Profile Display Section */}
+      <div className="bg-white rounded-lg shadow-md p-6 md:p-8 mb-8">
+        <div className="flex flex-col md:flex-row gap-10 items-start">
           <div>
             <img
               src={loggedInUser?.avatarImage || user?.photoURL}
               alt="Avatar"
-              style={{ maxWidth: "150px" }}
+              className="w-36 h-36 rounded-lg object-cover shadow-md"
             />
           </div>
-          <div className="pt-5 text-white">
-            <h2 className="text-2xl font-normal">
-              Name: {loggedInUser?.name || user?.displayName}
-            </h2>
-            <p className="text-xl font-normal">
-              Email: {loggedInUser?.email || user?.email}
-            </p>
-            <p className="text-red-400 font-normal">
-              Blood Group: {loggedInUser?.bloodGroup}
-            </p>
-            <p className="font-normal">Upazila: {loggedInUser?.upazila}</p>
-            <p className="font-normal">District: {loggedInUser?.district}</p>
-            <p className="font-normal">
-              Status:{" "}
-              <span
-                style={
+          <div className="flex-1 pt-2">
+            <h1 className="text-3xl font-bold text-gray-900 mb-6">
+              {loggedInUser?.name || user?.displayName}
+            </h1>
+            <div className="space-y-3">
+              <div className="border-b pb-3">
+                <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Email</p>
+                <p className="text-lg text-gray-800">{loggedInUser?.email || user?.email}</p>
+              </div>
+              <div className="border-b pb-3">
+                <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Blood Group</p>
+                <p className="text-lg font-bold text-red-600">{loggedInUser?.bloodGroup}</p>
+              </div>
+              <div className="border-b pb-3">
+                <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Location</p>
+                <p className="text-lg text-gray-800">{loggedInUser?.upazila}, {loggedInUser?.district}</p>
+              </div>
+              <div className="border-b pb-3">
+                <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Status</p>
+                <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
                   loggedInUser?.status === "active"
-                    ? { color: "white" }
-                    : { color: "red" }
-                }
-              >
-                {loggedInUser?.status}
-              </span>
-            </p>
-            <p className="font-normal">Role: {loggedInUser?.role}</p>
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800"
+                }`}>
+                  {loggedInUser?.status}
+                </span>
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Role</p>
+                <p className="text-lg text-gray-800 capitalize">{loggedInUser?.role}</p>
+              </div>
+            </div>
           </div>
         </div>
+
+        <button
+          onClick={handleEditProfile}
+          className="mt-8 py-2 px-6 rounded-md font-semibold bg-red-600 hover:bg-red-700 text-white transition-colors duration-200"
+        >
+          {editProfile ? "Cancel" : "Edit Profile"}
+        </button>
       </div>
 
-      <button
-        onClick={handleEditProfile}
-        className=" py-2 px-2 rounded-md transition delay-200 bg-red-800 hover:bg-slate-700 text-white mt-5"
-      >
-        {editProfile ? "Cancel" : "Edit Profile"}
-      </button>
-      {/* update profile section */}
+      {/* Update Profile Form Section */}
       {editProfile && (
-        <section className="mt-4 ">
+        <section className="mb-8">
           {currentUser.map((user) => (
-            <div key={user._id}>
-              <div className="bg-[#8B0000] shadow-lg px-3 rounded-md text-sm">
-                <div className="p-2 py-6">
-                  <h3 className="text-2xl  mb-2 text-center font-bold text-white">
-                    Update your profile
-                  </h3>
-                  <form onSubmit={handleSubmit(onSubmit)}>
-                    <p className="text-sm font-semibold mb-1 text-white">
-                      Name*
-                    </p>
-                    <input
-                      {...register("name", { required: true })}
-                      type="text"
-                      defaultValue={user.name}
-                      className=" py-2 px-2 rounded-md  input-bordered md:w-1/2"
-                    />
-
-                    <p className="text-sm font-semibold mt-5 mb-1 text-white">
-                      Your Photo*
-                    </p>
-
-                    <input
-                      {...register("image", { required: false })}
-                      type="file"
-                      className="file-input border-0 file-input-bordered file-input-sm w-full mb-4 max-w-xs"
-                    />
-                    <div className="flex gap-10 my-5">
-                      <div className="md:w-1/2">
-                        <p className="text-sm font-semibold mb-1 text-white">
-                          Blood Group*
-                        </p>
-                        <select
-                          defaultValue={user.group}
-                          {...register("group", { required: true })}
-                          className="py-2 px-2 rounded-md  select-bordered w-full"
-                        >
-                          <option value="A+">A+</option>
-                          <option value="A-">A-</option>
-                          <option value="B+">B+</option>
-                          <option value="B-">B-</option>
-                          <option value="O+">O+</option>
-                          <option value="O-">O-</option>
-                          <option value="AB+">AB+</option>
-                          <option value="AB-">AB-</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="flex flex-col md:flex-row gap-5">
-                      <div className="md:w-1/2">
-                        <p className="text-sm font-semibold mb-1 text-black">
-                          District*
-                        </p>
-                        <select
-                          {...register("district", { required: true })}
-                          className="select select-bordered w-full"
-                          value={selectedDistrict}
-                          onChange={(e) => setSelectedDistrict(e.target.value)}
-                        >
-                          <option>Select Your District</option>
-                          {districts.map((district) => (
-                            <option key={district._id} value={district.id}>
-                              {district.name} ({district.bn_name})
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div className="md:w-1/2">
-                        <p className="text-sm font-semibold mb-1 text-black">
-                          Upazila*
-                        </p>
-                        <select
-                          {...register("upazila", { required: true })}
-                          className="select select-bordered w-full"
-                          disabled={!selectedDistrict || isLoading}
-                        >
-                          <option>
-                            {isLoading
-                              ? "⏳ Loading upazilas..."
-                              : "-- Choose an Upazila --"}
-                          </option>
-                          {upazilas.map((upazila) => (
-                            <option key={upazila._id} value={upazila.id}>
-                              {upazila.name} ({upazila.bn_name})
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-
-                    <br />
-                    <button
-                      type="submit"
-                      className="text-red-500 shadow-lg px-2 py-1 rounded-md transition delay-200 bg-white border-0 mb-2 hover:bg-[#147C72] hover:text-white"
-                    >
-                      Update
-                    </button>
-                  </form>
-                </div>
+            <div key={user._id} className="bg-white rounded-lg shadow-lg overflow-hidden">
+              <div className="bg-red-600 px-8 py-6">
+                <h3 className="text-2xl font-bold text-white text-center">Update Your Profile</h3>
               </div>
+
+              <form onSubmit={handleSubmit(onSubmit)} className="p-8">
+                {/* Name Field */}
+                <div className="mb-6">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Full Name <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    {...register("name", { required: true })}
+                    type="text"
+                    defaultValue={user.name}
+                    className="w-full md:w-1/2 py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
+                  />
+                </div>
+
+                {/* Photo Upload */}
+                <div className="mb-6">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Profile Photo <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    {...register("image", { required: false })}
+                    type="file"
+                    className="file-input file-input-bordered file-input-sm w-full max-w-xs border-gray-300"
+                  />
+                </div>
+
+                {/* Blood Group */}
+                <div className="mb-6">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Blood Group <span className="text-red-600">*</span>
+                  </label>
+                  <select
+                    defaultValue={user.bloodGroup}
+                    {...register("group", { required: true })}
+                    className="w-full md:w-1/2 py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
+                  >
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                  </select>
+                </div>
+
+                {/* District & Upazila */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      District <span className="text-red-600">*</span>
+                    </label>
+                    <select
+                      {...register("district", { required: true })}
+                      className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
+                      value={selectedDistrict}
+                      onChange={(e) => setSelectedDistrict(e.target.value)}
+                    >
+                      <option>Select Your District</option>
+                      {districts.map((district) => (
+                        <option key={district._id} value={district.id}>
+                          {district.name} ({district.bn_name})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Upazila <span className="text-red-600">*</span>
+                    </label>
+                    <select
+                      {...register("upazila", { required: true })}
+                      className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
+                      disabled={!selectedDistrict || isLoading}
+                    >
+                      <option>
+                        {isLoading
+                          ? "⏳ Loading upazilas..."
+                          : "-- Choose an Upazila --"}
+                      </option>
+                      {upazilas.map((upazila) => (
+                        <option key={upazila._id} value={upazila.id}>
+                          {upazila.name} ({upazila.bn_name})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Submit Button */}
+                <div className="flex gap-4">
+                  <button
+                    type="submit"
+                    className="py-2 px-6 rounded-md font-semibold bg-red-600 hover:bg-red-700 text-white transition-colors duration-200"
+                  >
+                    Update Profile
+                  </button>
+                </div>
+              </form>
             </div>
           ))}
         </section>
       )}
+
       <ToastContainer
         position="bottom-center"
         autoClose={2500}

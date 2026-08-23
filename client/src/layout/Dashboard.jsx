@@ -247,8 +247,7 @@ function Dashboard(props) {
       <div className="text-center mt-10">
         <List>
           <Link to="/">
-            {" "}
-            <button className="btn text-center btn-sm ">Go Back to home</button>
+            <button className="btn text-center btn-sm bg-red-600 hover:bg-red-700 text-white border-none">Go Back to home</button>
           </Link>
         </List>
       </div>
@@ -260,7 +259,7 @@ function Dashboard(props) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: "flex", backgroundColor: '#147C72' }}>
+    <Box sx={{ display: "flex", backgroundColor: '#f3f4f6' }}>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -269,7 +268,7 @@ function Dashboard(props) {
           ml: { sm: `${drawerWidth}px` },
         }}
       >
-        <Toolbar className="bg-[#8B0000]">
+        <Toolbar className="bg-red-900">
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -303,6 +302,7 @@ function Dashboard(props) {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
+              backgroundColor: '#f9fafb',
             },
           }}
         >
@@ -315,6 +315,7 @@ function Dashboard(props) {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
+              backgroundColor: '#f9fafb',
             },
           }}
           open
@@ -325,7 +326,7 @@ function Dashboard(props) {
       <Box
         component="main"
         sx={{
-          background: "#147C72",
+          background: "#ffffff",
           flexGrow: 1,
           p: 3,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
