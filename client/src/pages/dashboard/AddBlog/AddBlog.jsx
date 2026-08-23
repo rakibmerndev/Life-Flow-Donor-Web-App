@@ -2,6 +2,7 @@ import JoditEditor from "jodit-react";
 import { useRef } from "react";
 import { Helmet } from "react-helmet";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAxiosPublic from "../../../hooks/useAxiosPublic.js";
 import useAxiosSecure from "../../../hooks/useAxiosSecure.js";
@@ -12,6 +13,7 @@ const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_ke
 
 const AddBlog = () => {
   const editor = useRef(null);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -95,6 +97,7 @@ const AddBlog = () => {
             timer: 1500,
           });
 
+          navigate("/dashboard/content-management");
         }
       }
     } catch (error) {

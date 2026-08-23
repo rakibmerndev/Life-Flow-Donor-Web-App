@@ -169,6 +169,13 @@ const ContentManagement = () => {
                             Delete
                           </button>
                         )}
+                        {currentUser[0]?.role === "admin" && (
+                          <Link  to={`/details/${blog._id}`}>
+                            <button className="px-4 py-2 rounded-md bg-gray-600 hover:bg-gray-700 text-white text-xs font-semibold transition-colors">
+                              View
+                            </button>
+                          </Link>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -193,7 +200,8 @@ const ContentManagement = () => {
         {filteredBlogs.length > 0 && (
           <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
             <p className="text-sm text-gray-600">
-              Showing <span className="font-semibold">{filteredBlogs.length}</span> of{" "}
+              Showing{" "}
+              <span className="font-semibold">{filteredBlogs.length}</span> of{" "}
               <span className="font-semibold">{blogs.length}</span> total blogs
             </p>
           </div>

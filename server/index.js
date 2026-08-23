@@ -8,7 +8,10 @@ const stripe = require("stripe")(process.env.SECRET_KEY_STRIPE);
 
 // middleware
 
-const allowedOrigins = ["https://life-flow-donor.vercel.app", "http://localhost:5173"];
+const allowedOrigins = [
+  "https://life-flow-donor.vercel.app",
+  "http://localhost:5173",
+];
 
 app.use(
   cors({
@@ -410,7 +413,7 @@ async function run() {
 
     app.get("/search", async (req, res) => {
       const queryParams = req.query;
-      console.log(queryParams)
+      console.log(queryParams);
 
       const sortOptions = {
         bloodGroup: 1,
