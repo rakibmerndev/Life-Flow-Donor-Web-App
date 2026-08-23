@@ -162,7 +162,7 @@ function Dashboard(props) {
               <Divider />
 
               <div>
-                <Link to=" /dashboard/content-management">
+                <Link to="/dashboard/content-management">
                   <ListItem disablePadding>
                     <ListItemButton>
                       <div>
