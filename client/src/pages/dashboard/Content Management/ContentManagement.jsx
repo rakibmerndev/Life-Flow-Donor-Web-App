@@ -20,14 +20,13 @@ const ContentManagement = () => {
   );
 
   const handleDelete = (id) => {
-    // console.log(id);
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#6b7280",
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -43,10 +42,9 @@ const ContentManagement = () => {
       }
     });
   };
+
   const handlePublish = async (id) => {
-    // console.log(id);
     const res = await axiosSecure.patch(`/blogs/${id}`);
-    // console.log(res.data)
     if (res.data.modifiedCount > 0) {
       refetch();
       Swal.fire({
@@ -59,97 +57,147 @@ const ContentManagement = () => {
     }
   };
 
-  // const handleUnpublished = async (id)=>{
-  //   const res = await  axiosSecure.patch(`/blog/${id}`);
-  //   if (res.data.modifiedCount > 0) {
-  //     refetch();
-  //     Swal.fire({
-  //       position: "center",
-  //       icon: "success",
-  //       title: "Your blog has been unpublished",
-  //       showConfirmButton: false,
-  //       timer: 1500,
-  //     });
-  //   }
-  // }
-
   return (
-    <div className="bg-red-400 px-2 py-2 rounded-md">
+    <div className="bg-gray-50 min-h-screen p-4 md:p-8">
       <Helmet>
-        <title>LifeFlowDonor |Content Management</title>
+        <title>LifeFlowDonor | Content Management</title>
       </Helmet>
 
-      <div className="flex justify-end">
-        <Link to="/dashboard/content-management/add-blog">
-          <button className="px-2 py-1 transition hover:bg-yellow-600 bg-[#8B0000] rounded-md text-black">
-            Add blog
-          </button>
-        </Link>
+      {/* Header Section */}
+      <div className="max-w-7xl mx-auto mb-8">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
+          Content Management
+        </h1>
+        <p className="text-gray-600 mt-2">Manage and publish your blog posts</p>
       </div>
 
-      <div className="mb-10">
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-          className="select select-bordered w-full max-w-xs"
-        >
-          <option value="">All</option>
-          <option value="draft">Draft</option>
-          <option value="published">Published</option>
-        </select>
-      </div>
-      <div>
-        <div className="overflow-x-auto">
-          <table className="table table-xs">
-            <thead>
-              <tr>
-                <th></th>
-                <th> Blog Title</th>
-                <th>Status</th>
-                {currentUser[0]?.role === "admin" && (
-                  <>
-                    <th>Action</th>
-                    <th>Action</th>
-                  </>
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {filteredBlogs.map((blog, index) => (
-                <tr key={blog._id}>
-                  <th>{index + 1}</th>
+      {/* Top Bar with Filter and Add Button */}
+      <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-md p-6 mb-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex-1">
+            <label className="block text-sm font-semibold text-gray-700 mb-3">
+              Filter by Status
+            </label>
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="w-full md:w-64 py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
+            >
+              <option value="">All Posts</option>
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+            </select>
+          </div>
 
-                  <td>{blog.title}</td>
-                  <td>{blog.status}</td>
-                  {blog.status === "draft" ? (
-                    <td>
-                      {currentUser[0]?.role === "admin" && (
-                        <button
-                          onClick={() => handlePublish(blog._id)}
-                          className="btn btn-xs"
-                        >
-                          Publish
-                        </button>
-                      )}
-                    </td>
-                  ) : (
-                    <td></td>
-                  )}
-                  {currentUser[0]?.role === "admin" && (
-                    <td>
-                      <button
-                        onClick={() => handleDelete(blog._id)}
-                        className="btn btn-xs"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="md:flex-shrink-0">
+            <Link to="/dashboard/content-management/add-blog">
+              <button className="w-full md:w-auto px-6 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white font-semibold transition-colors">
+                + Add Blog
+              </button>
+            </Link>
+          </div>
         </div>
+      </div>
+
+      {/* Table Section */}
+      <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="bg-red-600 px-6 py-4">
+          <h2 className="text-xl font-bold text-white">
+            {filteredBlogs.length} Blog{filteredBlogs.length !== 1 ? "s" : ""}
+          </h2>
+        </div>
+
+        <div className="overflow-x-auto">
+          {filteredBlogs.length > 0 ? (
+            <table className="w-full">
+              <thead className="bg-gray-100 border-b border-gray-300">
+                <tr>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                    #
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                    Blog Title
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {filteredBlogs.map((blog, index) => (
+                  <tr
+                    key={blog._id}
+                    className="hover:bg-gray-50 transition-colors"
+                  >
+                    <td className="px-6 py-4 text-sm font-semibold text-gray-900">
+                      {index + 1}
+                    </td>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-800">
+                      {blog.title}
+                    </td>
+                    <td className="px-6 py-4 text-sm">
+                      <span
+                        className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
+                          blog.status === "published"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-yellow-100 text-yellow-800"
+                        }`}
+                      >
+                        {blog.status.charAt(0).toUpperCase() +
+                          blog.status.slice(1)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm">
+                      <div className="flex gap-2 flex-wrap">
+                        {blog.status === "draft" &&
+                          currentUser[0]?.role === "admin" && (
+                            <button
+                              onClick={() => handlePublish(blog._id)}
+                              className="px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 text-white text-xs font-semibold transition-colors"
+                            >
+                              Publish
+                            </button>
+                          )}
+                        {currentUser[0]?.role === "admin" && (
+                          <button
+                            onClick={() => handleDelete(blog._id)}
+                            className="px-4 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition-colors"
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="p-8 text-center">
+              <p className="text-lg text-gray-600">
+                No blog posts found matching the selected filter.
+              </p>
+              <Link to="/dashboard/content-management/add-blog">
+                <button className="mt-4 px-6 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white font-semibold transition-colors">
+                  Create Your First Blog
+                </button>
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* Footer Stats */}
+        {filteredBlogs.length > 0 && (
+          <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
+            <p className="text-sm text-gray-600">
+              Showing <span className="font-semibold">{filteredBlogs.length}</span> of{" "}
+              <span className="font-semibold">{blogs.length}</span> total blogs
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
