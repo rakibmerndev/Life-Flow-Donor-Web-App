@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import useAuth from "../../hooks/useAuth.js";
 import useAxiosPublic from "../../hooks/useAxiosPublic.js";
 import useArea from "../../hooks/useArea.js";
+import useCurrentUser from "../../hooks/useCurrentUser.js";
 
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
@@ -19,6 +20,7 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [selectedDistrict, setSelectedDistrict] = useState("");
+  const { refetch } = useCurrentUser();
 
   const {
     districts,
@@ -83,6 +85,8 @@ const Signup = () => {
 
             if (dbRes.data.insertedId) {
               reset();
+              // Refetch current user data to update navbar
+              await refetch();
               Swal.fire({
                 position: "center",
                 icon: "success",
