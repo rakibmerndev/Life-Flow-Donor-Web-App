@@ -176,8 +176,8 @@ const Search = () => {
         {userNumber && searchedUser.length === 0 && (
           <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg mb-8">
             <p className="text-lg font-semibold text-yellow-800 text-center">
-              😔 Sorry, no donors found matching your search criteria. Please try
-              different filters.
+              😔 Sorry, no donors found matching your search criteria. Please
+              try different filters.
             </p>
           </div>
         )}

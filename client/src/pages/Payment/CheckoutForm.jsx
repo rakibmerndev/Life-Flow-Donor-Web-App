@@ -2,7 +2,6 @@ import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-
 import useAuth from "../../hooks/useAuth.js";
 import useAxiosSecure from "../../hooks/useAxiosSecure.js";
 
@@ -12,49 +11,47 @@ const CheckoutFrom = () => {
   const elements = useElements();
   const [clientSecret, setClientSecret] = useState("");
   const [error, setError] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const axiosSecure = useAxiosSecure();
 
   const [transaction, setTransaction] = useState();
   const navigate = useNavigate();
 
-  const [selectedOption, setSelectedOption] = useState(0);
-  const [customPrice, setCustomPrice] = useState(0);
+  const [selectedOption, setSelectedOption] = useState(5);
+  const [customPrice, setCustomPrice] = useState("");
 
   const options = [5, 10, 20, 50, 100];
-  const totalDonation = selectedOption > 0 ? selectedOption : customPrice;
+  const totalDonation = selectedOption > 0 && selectedOption !== "custom" ? selectedOption : (customPrice ? Number(customPrice) : 0);
 
   useEffect(() => {
     if (totalDonation > 0) {
       axiosSecure
         .post("/create-payment-intent", { price: totalDonation })
         .then((res) => {
-          // console.log(res.data.clientSecret);
           setClientSecret(res.data.clientSecret);
         });
     }
   }, [axiosSecure, totalDonation]);
 
-  const handleSelectChange = (event) => {
-    setSelectedOption(Number(event.target.value));
-    setCustomPrice(0);
-  };
-
   const handleCustomPriceChange = (event) => {
-    setSelectedOption(0);
-    setCustomPrice(Number(event.target.value));
+    setSelectedOption("custom");
+    setCustomPrice(event.target.value);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsProcessing(true);
 
     if (!stripe || !elements) {
+      setIsProcessing(false);
       return;
     }
 
     const card = elements.getElement(CardElement);
 
     if (card == null) {
+      setIsProcessing(false);
       return;
     }
 
@@ -65,126 +62,192 @@ const CheckoutFrom = () => {
 
     if (error) {
       setError(error.message);
+      setIsProcessing(false);
     } else {
       setError("");
-      // console.log("[PaymentMethod]", paymentMethod);
-    }
 
-    // confirm payment
-    const { paymentIntent, error: confirmError } =
-      await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: card,
-          billing_details: {
-            email: user?.email || "anonymous",
-            name: user?.displayName || "anonymous",
+      const { paymentIntent, error: confirmError } =
+        await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: card,
+            billing_details: {
+              email: user?.email || "anonymous",
+              name: user?.displayName || "anonymous",
+            },
           },
-        },
-      });
-    if (confirmError) {
-      // console.log(confirmError, "confirm error");
-      Swal.fire({
-        icon: "error",
-        title: `${confirmError.message}`,
-      });
-    } else {
-      // console.log(paymentIntent, "payment intent");
-      if (paymentIntent.status === "succeeded") {
-        // console.log("transaction id", paymentIntent.id);
-        setTransaction(paymentMethod.id);
+        });
 
-        //  now save the payment in the database
-        const payment = {
-          email: user.email,
-          transactionId: paymentIntent.id,
-          price: totalDonation,
-          date: new Date(), // utc date convert. use moment js to
-        };
+      if (confirmError) {
+        Swal.fire({
+          icon: "error",
+          title: "Payment Failed",
+          text: confirmError.message,
+          confirmButtonColor: "#dc2626",
+        });
+        setIsProcessing(false);
+      } else {
+        if (paymentIntent.status === "succeeded") {
+          setTransaction(paymentMethod.id);
 
-        const res = await axiosSecure.post("/payments", payment);
-        // console.log("payment saved", res.data);
+          const payment = {
+            email: user.email,
+            transactionId: paymentIntent.id,
+            price: totalDonation,
+            date: new Date(),
+          };
 
-        if (res.data.donationResult.insertedId) {
-          //
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Donation successful",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-          setTimeout(() => {
-            navigate("/dashboard/paymentHistory");
-          }, 2000);
+          const res = await axiosSecure.post("/payments", payment);
+
+          if (res.data.donationResult.insertedId) {
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Donation Successful!",
+              text: `Transaction ID: ${paymentIntent.id}`,
+              confirmButtonColor: "#dc2626",
+              showConfirmButton: false,
+              timer: 2000,
+            });
+            setTimeout(() => {
+              navigate("/dashboard/paymentHistory");
+            }, 2000);
+          }
         }
+        setIsProcessing(false);
       }
     }
   };
 
   return (
-    <div className=" bg-slate-100 text-black shadow-lg p-5 mx-auto">
-      <div className="mb-10">
-        <span className="my-5 text-xl font-bold">
-          Select an amount for donation
-        </span>
-        <select
-          className="select select-bordered w-full max-w-xs"
-          value={selectedOption}
-          onChange={handleSelectChange}
-        >
-          <option value={0}>Custom</option>
-          {options.map((option) => (
-            <option key={option} value={option}>
-              ${option}
-            </option>
-          ))}
-        </select>
-
-        {selectedOption === 0 && (
-          <>
-            {" "}
-            <p className="my-2 font-bold">Or enter a custom amount</p>
-            <input
-              type="number"
-              className="input input-bordered mt-2"
-              placeholder="Enter custom amount"
-              value={customPrice}
-              onChange={handleCustomPriceChange}
-            />
-          </>
-        )}
+    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+      {/* Header */}
+      <div className="bg-red-600 px-6 md:px-8 py-6">
+        <h1 className="text-2xl font-bold text-white">Make a Donation</h1>
+        <p className="text-red-100 mt-1">Secure payment with Stripe</p>
       </div>
-      <form onSubmit={handleSubmit}>
-        <CardElement
-          options={{
-            style: {
-              base: {
-                fontSize: "16px",
-                color: "#424770",
-                "::placeholder": {
-                  color: "#000000",
-                },
-              },
-              invalid: {
-                color: "#F2484B",
-              },
-            },
-          }}
-        />
-        <button
-          className="btn btn-sm bg-white text-violet-500 my-5"
-          type="submit"
-          disabled={!stripe || !clientSecret}
-        >
-          Pay
-        </button>
-        {error && <p className="text-red-400">{error}</p>}
-        {transaction && (
-          <p className="text-green-600">
-            Transaction Successful. Transaction id: {transaction}
+
+      {/* Form Content */}
+      <div className="p-6 md:p-8 space-y-6">
+        {/* Donation Amount Section */}
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-3">
+            Select Donation Amount <span className="text-red-600">*</span>
+          </label>
+
+          {/* Preset Options */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+            {options.map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => {
+                  setSelectedOption(option);
+                  setCustomPrice("");
+                }}
+                className={`py-3 px-4 rounded-md font-semibold transition-all ${
+                  selectedOption === option
+                    ? "bg-red-600 text-white ring-2 ring-red-400"
+                    : "bg-gray-100 text-gray-800 hover:bg-gray-200"
+                }`}
+              >
+                ${option}
+              </button>
+            ))}
+          </div>
+
+          {/* Custom Amount */}
+          <div>
+            <label className="text-sm font-semibold text-gray-700 mb-2 block">
+              Or Enter Custom Amount
+            </label>
+            <div className="relative">
+              <span className="absolute left-4 top-3 text-gray-500 text-lg">$</span>
+              <input
+                type="number"
+                placeholder="Enter custom amount"
+                value={customPrice}
+                onChange={handleCustomPriceChange}
+                min="1"
+                className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
+              />
+            </div>
+          </div>
+
+          {/* Amount Summary */}
+          <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+            <p className="text-sm text-gray-600">Total Donation Amount</p>
+            <p className="text-2xl font-bold text-red-600">
+              ${totalDonation.toFixed(2)}
+            </p>
+          </div>
+        </div>
+
+        {/* Card Element Section */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-3">
+              Card Details <span className="text-red-600">*</span>
+            </label>
+            <div className="p-4 border border-gray-300 rounded-md bg-white hover:border-red-600 transition-colors">
+              <CardElement
+                options={{
+                  style: {
+                    base: {
+                      fontSize: "16px",
+                      color: "#374151",
+                      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                      "::placeholder": {
+                        color: "#9CA3AF",
+                      },
+                    },
+                    invalid: {
+                      color: "#dc2626",
+                      iconColor: "#dc2626",
+                    },
+                  },
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="p-4 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-sm text-red-800 font-semibold">
+                ⚠️ {error}
+              </p>
+            </div>
+          )}
+
+          {/* Success Message */}
+          {transaction && (
+            <div className="p-4 bg-green-50 border border-green-200 rounded-md">
+              <p className="text-sm text-green-800 font-semibold">
+                ✓ Payment Successful!
+              </p>
+              <p className="text-xs text-green-700 mt-1">
+                Transaction ID: {transaction}
+              </p>
+            </div>
+          )}
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={!stripe || !clientSecret || totalDonation === 0 || isProcessing}
+            className="w-full py-3 px-4 rounded-md bg-red-600 hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold transition-colors text-lg"
+          >
+            {isProcessing ? "Processing Payment..." : `Donate $${totalDonation.toFixed(2)}`}
+          </button>
+        </form>
+
+        {/* Info */}
+        <div className="p-4 bg-blue-50 border border-blue-200 rounded-md">
+          <p className="text-xs text-blue-800">
+            <strong>ℹ️ Test Card:</strong> Use 4242 4242 4242 4242 with any future expiry date and any 3-digit CVC for testing.
           </p>
-        )}
-      </form>
+        </div>
+      </div>
     </div>
   );
 };
