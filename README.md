@@ -1,17 +1,41 @@
-# About this project
-- This is a MERN project.
+# LifeFlowDonor
+
+A MERN stack blood donation platform that connects donors with recipients.
 
 ## Features
 
-- Every successfully registered user will have default role which is donor.
-- A person can not create multiple account with same email. If he tries then he/she will face errors.
-- If a person tries to log in with wrong password then he/she will see an error.
-- Admin can change user role to volunteer or admin.
-- Admin has all the privilages on this website. He can create request, update request, delete request. He can also change the status of the request. He can post blog. He can publish blogs.
-- Volunteer can only update the request status. He can also create blog.
-- Any user can see all requests but can not update other's request. User can also see the details of the request and he can also add himself as donor.
-- User can create donation request. After a successful creation that donation request will be pending. An admin or volunteer can update the status or If any other user submit himself as donor then the status will be in progress.
-- User can also donate for their works .
+- User registration with role-based access (Donor, Volunteer, Admin)
+- Search for blood donors by blood group and location
+- Create and manage blood donation requests
+- Request status tracking (Pending, In Progress, Done, Canceled)
+- Secure Stripe payment integration for donations
+- Admin dashboard for user and request management
+- Blog system with draft and publish workflow
+- User profile management with image upload
+- Password visibility toggle in login/signup forms
+- Responsive design with professional UI/UX
 
-## Live website  (under construction) 🤟
+## Tech Stack
+
+- **Frontend**: React, React Router, Tailwind CSS, React Query
+- **Backend**: Node.js, Express, MongoDB
+- **Authentication**: Firebase
+- **Payment**: Stripe
+- **Image Hosting**: ImgBB
+- **UI Components**: SweetAlert2, React Icons, React Helmet
+
+## How It Works
+
+1. Users sign up as donors
+2. Search for available donors or create blood requests
+3. Volunteers and admins manage requests and user roles
+4. Users can make monetary donations through Stripe
+5. Admins can create and publish blogs
+
+## Live Demo
+
 https://life-flow-donor.vercel.app/
+
+## Author
+
+Rakib - [github.com/rakibmerndev](https://github.com/rakibmerndev)
