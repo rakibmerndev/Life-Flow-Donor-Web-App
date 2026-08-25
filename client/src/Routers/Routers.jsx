@@ -22,6 +22,7 @@ import Login from "../pages/Login/Login";
 import Payment from "../pages/Payment/Payment";
 import Search from "../pages/Search/Search";
 import Signup from "../pages/Signup/Signup";
+import NotFound from "../pages/NotFound/NotFound";
 import AdminRoute from "./AdminRoute";
 import PrivateRoute from "./PrivateRoute";
 
@@ -29,6 +30,7 @@ const Routers = createBrowserRouter([
   {
     path: "/",
     element: <Main></Main>,
+    errorElement: <NotFound></NotFound>,
     children: [
       {
         path: "/",
