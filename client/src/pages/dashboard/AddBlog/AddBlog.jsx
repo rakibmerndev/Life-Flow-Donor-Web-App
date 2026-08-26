@@ -113,9 +113,9 @@ const AddBlog = () => {
 
   const editorConfig = {
     readonly: false,
-    height: 400,
+    height: 300,
     toolbar: true,
-    toolbarAdaptive: false,
+    toolbarAdaptive: true,
     showCharsCounter: false,
     showWordsCounter: false,
     showXPathInStatusbar: false,
@@ -143,12 +143,12 @@ const AddBlog = () => {
         {/* Form Card */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           {/* Card Header */}
-          <div className="bg-red-600 px-6 py-4">
-            <h2 className="text-xl font-bold text-white">Blog Details</h2>
+          <div className="bg-red-600 px-4 md:px-6 py-4">
+            <h2 className="text-lg md:text-xl font-bold text-white">Blog Details</h2>
           </div>
 
           {/* Card Body */}
-          <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="p-4 md:p-8 space-y-6">
             {/* Title Field */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -158,7 +158,7 @@ const AddBlog = () => {
                 {...register("title", { required: true })}
                 type="text"
                 placeholder="Enter your blog title"
-                className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
+                className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 text-base"
               />
               {errors.title && (
                 <p className="text-red-600 text-sm mt-1">Title is required</p>
@@ -170,14 +170,14 @@ const AddBlog = () => {
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Thumbnail Image <span className="text-red-600">*</span>
               </label>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-red-600 transition-colors">
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 md:p-6 hover:border-red-600 transition-colors">
                 <input
                   {...register("image", { required: true })}
                   type="file"
                   accept="image/*"
-                  className="w-full cursor-pointer"
+                  className="w-full cursor-pointer text-sm"
                 />
-                <p className="text-sm text-gray-500 mt-2">
+                <p className="text-xs md:text-sm text-gray-500 mt-2">
                   Recommended size: 1200x600px (JPG, PNG)
                 </p>
               </div>
@@ -191,7 +191,7 @@ const AddBlog = () => {
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Blog Content <span className="text-red-600">*</span>
               </label>
-              <div className="border border-gray-300 rounded-md overflow-hidden bg-white">
+              <div className="border border-gray-300 rounded-md overflow-hidden bg-white min-h-[300px]">
                 <JoditEditor
                   ref={editor}
                   config={editorConfig}
@@ -200,16 +200,15 @@ const AddBlog = () => {
                 />
               </div>
               <p className="text-xs text-gray-500 mt-2">
-                💡 Tip: Use the formatting toolbar to style your content. Make
-                sure to type at least some content.
+                💡 Tip: Use the formatting toolbar to style your content. Make sure to type at least some content.
               </p>
             </div>
 
             {/* Form Actions */}
-            <div className="border-t pt-6 flex flex-col sm:flex-row gap-3">
+            <div className="border-t pt-6 flex flex-col sm:flex-row gap-2 sm:gap-3">
               <button
                 type="submit"
-                className="px-6 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white font-semibold transition-colors"
+                className="w-full sm:w-auto px-6 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white font-semibold transition-colors text-sm sm:text-base"
               >
                 Create Blog
               </button>
@@ -221,7 +220,7 @@ const AddBlog = () => {
                     editor.current.value = "";
                   }
                 }}
-                className="px-6 py-2 rounded-md border-2 border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
+                className="w-full sm:w-auto px-6 py-2 rounded-md border-2 border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition-colors text-sm sm:text-base"
               >
                 Clear
               </button>
