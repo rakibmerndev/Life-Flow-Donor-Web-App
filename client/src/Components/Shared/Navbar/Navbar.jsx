@@ -5,6 +5,7 @@ import useAuth from "../../../hooks/useAuth.js";
 import useCurrentUser from "../../../hooks/useCurrentUser.js";
 import "./Navbar.css";
 
+import { useState } from "react";
 import logo2 from "../../../assets/Logo.png";
 
 const Navbar = () => {
@@ -12,48 +13,51 @@ const Navbar = () => {
   const [isAdmin] = useAdmin();
   const { currentUser } = useCurrentUser();
   const role = currentUser[0]?.role;
+  const [visible, setVisible] = useState(false);
+
+  const handleDropDown = () => {
+    setVisible(!visible);
+  };
 
   const navLinks = (
     <>
-      <li>
+      <li onClick={handleDropDown}>
         <NavLink to="/">Home</NavLink>
       </li>
-      <li>
+      <li onClick={handleDropDown}>
         <NavLink to="/requests">Requests</NavLink>
       </li>
-      <li>
+      <li onClick={handleDropDown}>
         <NavLink to="/blogs">Blogs</NavLink>
       </li>
 
       {user ? (
         <>
-          {" "}
           {user && isAdmin && (
-            <li>
+            <li onClick={handleDropDown}>
               <Link to="/dashboard/adminHome">Dashboard</Link>
             </li>
           )}
           {user && role == "volunteer" && (
-            <li>
+            <li onClick={handleDropDown}>
               <Link to="/dashboard/adminHome">Dashboard</Link>
             </li>
           )}
           {user && role === "donor" && (
-            <li>
+            <li onClick={handleDropDown}>
               <Link to="/dashboard/userHome">Dashboard</Link>
             </li>
           )}
-          <li>
+          <li onClick={handleDropDown}>
             <NavLink to="/funding">Funding</NavLink>
           </li>
         </>
       ) : (
         <>
-          {" "}
-          <li>
+          <li onClick={handleDropDown}>
             <NavLink to="/login">Login</NavLink>
           </li>
-          <li>
+          <li onClick={handleDropDown}>
             <NavLink to="/signup">Signup</NavLink>
           </li>
         </>
@@ -61,9 +65,9 @@ const Navbar = () => {
     </>
   );
   return (
-    <div className="navbar font-semibold">
+    <div className="navbar font-semibold sticky top-0 z-50 bg-white shadow-md">
       <div className="navbar-start">
-        <div className="dropdown">
+        <div className="dropdown" onClick={handleDropDown}>
           <label tabIndex={0} className="btn btn-ghost lg:hidden">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -80,12 +84,14 @@ const Navbar = () => {
               />
             </svg>
           </label>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow rounded-box w-52"
-          >
-            {navLinks}
-          </ul>
+          {visible && (
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow rounded-box w-52 bg-white"
+            >
+              {navLinks}
+            </ul>
+          )}
         </div>
         <Link
           to="/"
@@ -112,7 +118,7 @@ const Navbar = () => {
 
             <ul
               tabIndex={0}
-              className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content rounded-box w-52 bg-white"
+              className="mt-3 p-2 shadow menu menu-sm dropdown-content rounded-box w-52 bg-white"
             >
               <li className="rounded-md ">
                 <Link to="/dashboard/profile">Profile</Link>

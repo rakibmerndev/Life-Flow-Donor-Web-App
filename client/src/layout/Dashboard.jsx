@@ -24,8 +24,7 @@ import useAdmin from "../hooks/useAdmin.js";
 import useCurrentUser from "../hooks/useCurrentUser.js";
 const drawerWidth = 240;
 
-function Dashboard(props) {
-  const { window } = props;
+function Dashboard() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isAdmin] = useAdmin();
 
@@ -256,9 +255,6 @@ function Dashboard(props) {
     </div>
   );
 
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
-
   return (
     <Box sx={{ display: "flex", backgroundColor: "#f3f4f6" }}>
       <CssBaseline />
@@ -290,7 +286,6 @@ function Dashboard(props) {
         aria-label="mailbox folders"
       >
         <Drawer
-          container={container}
           variant="temporary"
           open={mobileOpen}
           onClose={handleDrawerToggle}

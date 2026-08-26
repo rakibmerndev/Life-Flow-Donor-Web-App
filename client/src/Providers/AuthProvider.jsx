@@ -6,11 +6,12 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
-import { createContext, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import app from "../firebase/firebase.config";
 import useAxiosPublic from "../hooks/useAxiosPublic.js";
 
-export const AuthContext = createContext(null);
+import { AuthContext } from "./AuthContext.jsx";
+import PropTypes from "prop-types";
 
 
 const AuthProvider = ({ children }) => {
@@ -93,3 +94,8 @@ const AuthProvider = ({ children }) => {
 };
 
 export default AuthProvider;
+
+
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
