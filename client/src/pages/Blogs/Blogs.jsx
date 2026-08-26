@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 import { Skeleton } from "@mui/material";
 import { Stack } from "@mui/system";
 import useShowBlogs from "../../hooks/useShowBlogs.js";
-import Blog from "./Blog";
+import BlogCard from "../../Components/BlogCard/BlogCard.jsx";
 
 const Blogs = () => {
   const { blogs, isLoading } = useShowBlogs();
@@ -131,7 +131,7 @@ const Blogs = () => {
             {blogs.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  gap-5">
                 {blogs.map((blog) => (
-                  <Blog key={blog._id} blog={blog}></Blog>
+                  <BlogCard key={blog._id} blog={blog}></BlogCard>
                 ))}
               </div>
             ) : (

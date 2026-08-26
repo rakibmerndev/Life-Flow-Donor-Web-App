@@ -5,7 +5,6 @@ import useAxiosPublic from "./useAxiosPublic";
 const useArea = () => {
   const axiosPublic = useAxiosPublic();
   const [selectedDistrict, setSelectedDistrict] = useState("");
-  // district and upazila data load from server
 
   const { data: districts = [] } = useQuery({
     queryKey: ["districts"],

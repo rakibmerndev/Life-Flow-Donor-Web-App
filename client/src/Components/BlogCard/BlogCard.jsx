@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 import PropTypes from "prop-types";
 
-const Blog = ({ blog }) => {
+const BlogCard = ({ blog }) => {
   return (
     <div className="text-sm">
       <div className=" h-full max-w-[300px] border-l-4 border-l-red-600 rounded-md flex flex-col justify-between bg-white text-gray-800 shadow-lg hover:shadow-xl transition-shadow">
@@ -26,8 +26,8 @@ const Blog = ({ blog }) => {
   );
 };
 
-Blog.propTypes = {
+BlogCard.propTypes = {
   blog: PropTypes.node,
 };
 
-export default Blog;
+export default BlogCard;

@@ -8,6 +8,10 @@ import useAuth from "../../hooks/useAuth.js";
 import useAxiosPublic from "../../hooks/useAxiosPublic.js";
 import useArea from "../../hooks/useArea.js";
 import useCurrentUser from "../../hooks/useCurrentUser.js";
+import {
+  getDistrictName,
+  getUpazilaName,
+} from "../../lib/getLocationName.js";
 
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
@@ -29,7 +33,6 @@ const Signup = () => {
     isLoading,
   } = useArea();
 
-  const district = selectedDistrict;
   const handleDistrictChange = (e) => {
     setSelectedDistrict(e.target.value);
     setDistrictFromHook(e.target.value);
@@ -64,10 +67,8 @@ const Signup = () => {
             updateUser(data.name, avatarImage);
 
             // Get district and upazila names
-            const districtName =
-              districts.find((d) => d.id === data.district)?.name || "";
-            const upazilaName =
-              upazilas.find((u) => u.id === data.upazila)?.name || "";
+            const districtName = getDistrictName(data.district, districts);
+            const upazilaName = getUpazilaName(data.upazila, upazilas);
 
             // Save user to database
             const userInfo = {
@@ -247,7 +248,7 @@ const Signup = () => {
                 <select
                   {...register("district", { required: true })}
                   className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
-                  value={district}
+                  value={selectedDistrict}
                   onChange={handleDistrictChange}
                 >
                   <option value="">Select Your District</option>
@@ -266,7 +267,7 @@ const Signup = () => {
                 <select
                   {...register("upazila", { required: true })}
                   className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                  disabled={!district || isLoading}
+                  disabled={!selectedDistrict|| isLoading}
                 >
                   <option>
                     {isLoading
