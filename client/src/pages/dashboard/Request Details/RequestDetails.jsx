@@ -61,6 +61,7 @@ const RequestDetails = () => {
     return status.charAt(0).toUpperCase() + status.slice(1);
   };
 
+  // Loading state
   if (isLoading) {
     return (
       <div className="bg-gray-50 min-h-screen p-4 md:p-8 flex items-center justify-center">
@@ -72,6 +73,7 @@ const RequestDetails = () => {
     );
   }
 
+  // Error state: check if request data exists
   if (!requests || Object.keys(requests).length === 0) {
     return (
       <div className="bg-gray-50 min-h-screen p-4 md:p-8">
@@ -94,6 +96,7 @@ const RequestDetails = () => {
       </Helmet>
 
       <div className="max-w-4xl mx-auto">
+        {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
             Request Details
@@ -103,6 +106,7 @@ const RequestDetails = () => {
           </p>
         </div>
 
+        {/* Requester Information Card */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
           <div className="bg-red-600 px-6 py-4">
             <h2 className="text-xl font-bold text-white">
@@ -131,6 +135,7 @@ const RequestDetails = () => {
           </div>
         </div>
 
+        {/* Recipient Information Card */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
           <div className="bg-red-600 px-6 py-4">
             <h2 className="text-xl font-bold text-white">
@@ -161,6 +166,7 @@ const RequestDetails = () => {
           </div>
         </div>
 
+        {/* Donation Details Card */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
           <div className="bg-red-600 px-6 py-4">
             <h2 className="text-xl font-bold text-white">Donation Details</h2>
@@ -196,6 +202,7 @@ const RequestDetails = () => {
           </div>
         </div>
 
+        {/* Location Information Card */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
           <div className="bg-red-600 px-6 py-4">
             <h2 className="text-xl font-bold text-white">Location</h2>
@@ -223,6 +230,7 @@ const RequestDetails = () => {
           </div>
         </div>
 
+        {/* Request Message Card */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
           <div className="bg-red-600 px-6 py-4">
             <h2 className="text-xl font-bold text-white">Request Message</h2>
@@ -234,6 +242,7 @@ const RequestDetails = () => {
           </div>
         </div>
 
+        {/* Request Status & Donor Info Card */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
           <div className="bg-red-600 px-6 py-4">
             <h2 className="text-xl font-bold text-white">Request Status</h2>
@@ -246,7 +255,7 @@ const RequestDetails = () => {
               <div className="mt-2">
                 <span
                   className={`inline-block px-4 py-2 rounded-full text-sm font-semibold ${getStatusColor(
-                    requests?.donationStatus,
+                    requests?.donationStatus
                   )}`}
                 >
                   {getStatusLabel(requests?.donationStatus)}
@@ -297,13 +306,16 @@ const RequestDetails = () => {
         )}
       </div>
 
+      {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+            {/* Modal Header */}
             <div className="bg-red-600 px-6 py-4">
               <h3 className="text-xl font-bold text-white">Confirm Donation</h3>
             </div>
 
+            {/* Modal Body */}
             <div className="p-6">
               <p className="text-gray-700 mb-4">
                 Please confirm that you want to donate blood for this request.
@@ -328,6 +340,7 @@ const RequestDetails = () => {
                 </div>
               </div>
 
+              {/* Modal Actions */}
               <div className="flex gap-3">
                 <button
                   onClick={() => setIsModalOpen(false)}

@@ -6,7 +6,7 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure.js";
 import useUsers from "../../../hooks/useUsers.js";
 
 const AllUsers = () => {
-  const { users, refetch, isLoading } = useUsers();
+  const { users, refetch } = useUsers();
   const [status, setStatus] = useState("");
   const axiosSecure = useAxiosSecure();
 
@@ -129,14 +129,6 @@ const AllUsers = () => {
   const filteredUsers = users.filter(
     (user) => status === "" || user.status === status,
   );
-
-  if (isLoading) {
-    return (
-      <div className="bg-gray-50 min-h-screen flex justify-center items-center">
-        <span className="loading loading-spinner loading-lg text-red-600"></span>
-      </div>
-    );
-  }
 
   const getRoleColor = (role) => {
     switch (role) {

@@ -1,30 +1,30 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
-import Dashboard from "../Layouts/Dashboard";
-import Main from "../Layouts/Main";
-import AllRequest from "../pages/AllRequest/AllRequest";
-import BlogDetails from "../pages/BlogDetails/BlogDetails";
+import Dashboard from "../layout/Dashboard";
+import Main from "../layout/Main";
+import AllRequest from "../pages/All Request/AllRequest";
 import Blogs from "../pages/Blogs/Blogs";
-import AddBlog from "../pages/Dashboard/AddBlog/AddBlog";
-import AdminHome from "../pages/Dashboard/AdminHome/AdminHome";
-import AllBgRequests from "../pages/Dashboard/AllRequest.jsx/AllBgRequests";
-import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
-import ContentManagement from "../pages/Dashboard/ContentManagement/ContentManagement";
-import CreateRequest from "../pages/Dashboard/CreateRequest/CreateRequest";
-import DashboardHome from "../pages/Dashboard/DashboardHome/DashboardHome";
-import DonationHistory from "../pages/Dashboard/DonationHistory/DonationHistory";
-import MyRequest from "../pages/Dashboard/MyRequest/MyRequest";
-import Profile from "../pages/Dashboard/Profile/Profile";
-import RequestDetails from "../pages/Dashboard/RequestDetails/RequestDetails";
-import UpdateRequest from "../pages/Dashboard/UpdateRequest/UpdateRequest";
+import AddBlog from "../pages/dashboard/AddBlog/AddBlog";
+import AdminHome from "../pages/dashboard/AdminHome/AdminHome";
+import AllBgRequests from "../pages/dashboard/AllRequest.jsx/AllBgRequests";
+import AllUsers from "../pages/dashboard/AllUsers/AllUsers";
+import ContentManagement from "../pages/dashboard/Content Management/ContentManagement";
+import CreateRequest from "../pages/dashboard/Create Request/CreateRequest";
+import DonationHistory from "../pages/dashboard/DonationHistory/DonationHistory";
+import DashboardHome from "../pages/dashboard/home/DashboardHome";
+import MyRequest from "../pages/dashboard/My Requests/MyRequest";
+import Profile from "../pages/dashboard/Profile/Profile";
+import RequestDetails from "../pages/dashboard/Request Details/RequestDetails";
+import UpdateRequest from "../pages/dashboard/Update/UpdateRequest";
 import Funding from "../pages/Funding/Funding";
 import Login from "../pages/Login/Login";
-import NotFound from "../pages/NotFound/NotFound";
 import Payment from "../pages/Payment/Payment";
 import Search from "../pages/Search/Search";
 import Signup from "../pages/Signup/Signup";
+import NotFound from "../pages/NotFound/NotFound";
 import AdminRoute from "./AdminRoute";
 import PrivateRoute from "./PrivateRoute";
+import BlogDetails from "../pages/BlogDetails/BlogDetails";
 
 const Routers = createBrowserRouter([
   {

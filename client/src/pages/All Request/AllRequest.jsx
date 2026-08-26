@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import useAxiosPublic from "../../hooks/useAxiosPublic.js";
-import LoadingSkeleton from "./LoadingSkeleton.jsx";
+import { useState } from "react";
+import LoadingSkeleton from "./LoadingSkeleton";
 
 const AllRequest = () => {
   const axiosPublic = useAxiosPublic();
@@ -65,9 +65,7 @@ const AllRequest = () => {
       <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="bg-red-600 px-6 py-4">
           <h2 className="text-xl font-bold text-white">
-            {isLoading
-              ? "Loading..."
-              : `${filteredRequests.length} Request${filteredRequests.length !== 1 ? "s" : ""}`}
+            {isLoading ? "Loading..." : `${filteredRequests.length} Request${filteredRequests.length !== 1 ? "s" : ""}`}
           </h2>
         </div>
 
@@ -80,9 +78,7 @@ const AllRequest = () => {
             <table className="w-full">
               <thead className="bg-gray-100 border-b border-gray-300">
                 <tr>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                    #
-                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">#</th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
                     Recipient Name
                   </th>
@@ -105,10 +101,7 @@ const AllRequest = () => {
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {filteredRequests.map((request, index) => (
-                  <tr
-                    key={request._id}
-                    className="hover:bg-gray-50 transition-colors"
-                  >
+                  <tr key={request._id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 text-sm font-semibold text-gray-900">
                       {index + 1}
                     </td>
@@ -126,9 +119,7 @@ const AllRequest = () => {
                     <td className="px-6 py-4 text-sm text-gray-800">
                       <div>
                         <p>{request.donationDate}</p>
-                        <p className="text-xs text-gray-500">
-                          {request.donationTime}
-                        </p>
+                        <p className="text-xs text-gray-500">{request.donationTime}</p>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm">
@@ -137,10 +128,10 @@ const AllRequest = () => {
                           request.donationStatus === "pending"
                             ? "bg-yellow-100 text-yellow-800"
                             : request.donationStatus === "inprogress"
-                              ? "bg-blue-100 text-blue-800"
-                              : request.donationStatus === "done"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-red-100 text-red-800"
+                            ? "bg-blue-100 text-blue-800"
+                            : request.donationStatus === "done"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
                         }`}
                       >
                         {request.donationStatus === "inprogress"
@@ -178,10 +169,8 @@ const AllRequest = () => {
         {!isLoading && filteredRequests.length > 0 && (
           <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
             <p className="text-sm text-gray-600">
-              Showing{" "}
-              <span className="font-semibold">{filteredRequests.length}</span>{" "}
-              of <span className="font-semibold">{requests.length}</span> total
-              requests
+              Showing <span className="font-semibold">{filteredRequests.length}</span> of{" "}
+              <span className="font-semibold">{requests.length}</span> total requests
             </p>
           </div>
         )}

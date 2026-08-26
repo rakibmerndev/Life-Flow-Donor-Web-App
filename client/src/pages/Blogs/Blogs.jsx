@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 import { Skeleton } from "@mui/material";
 import { Stack } from "@mui/system";
 import useShowBlogs from "../../hooks/useShowBlogs.js";
-import BlogCard from "../../Components/BlogCard/BlogCard.jsx";
+import BlogCard from "./BlogCard.jsx";
 
 const Blogs = () => {
   const { blogs, isLoading } = useShowBlogs();

@@ -99,7 +99,7 @@ const CreateRequest = () => {
 
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="p-8">
-            {/* Requester Info */}
+            {/* Requester Info - Read Only */}
             <div className="bg-gray-50 rounded-lg p-6 mb-8 border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 Requester Information

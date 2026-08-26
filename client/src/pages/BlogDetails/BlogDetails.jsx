@@ -2,6 +2,7 @@ import HTMLReactParser from "html-react-parser";
 import { Helmet } from "react-helmet";
 import useParticularBlog from "../../hooks/useParticularBlog";
 
+
 const BlogDetails = () => {
   const { blog, error, isLoading } = useParticularBlog();
 

@@ -4,14 +4,11 @@ import { useForm } from "react-hook-form";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import useArea from "../../hooks/useArea.js";
 import useAuth from "../../hooks/useAuth.js";
 import useAxiosPublic from "../../hooks/useAxiosPublic.js";
-import useArea from "../../hooks/useArea.js";
 import useCurrentUser from "../../hooks/useCurrentUser.js";
-import {
-  getDistrictName,
-  getUpazilaName,
-} from "../../lib/getLocationName.js";
+import { getDistrictName, getUpazilaName } from "../../lib/getLocationName.js";
 
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
@@ -267,7 +264,7 @@ const Signup = () => {
                 <select
                   {...register("upazila", { required: true })}
                   className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                  disabled={!selectedDistrict|| isLoading}
+                  disabled={!selectedDistrict || isLoading}
                 >
                   <option>
                     {isLoading
@@ -310,7 +307,10 @@ const Signup = () => {
             {/* Login Link */}
             <p className="text-center text-sm text-gray-600 mt-4">
               Already have an account?{" "}
-              <Link to="/login" className="text-red-600 font-semibold hover:underline">
+              <Link
+                to="/login"
+                className="text-red-600 font-semibold hover:underline"
+              >
                 Login here
               </Link>
             </p>
@@ -321,7 +321,9 @@ const Signup = () => {
         <div className="text-center mt-6 text-sm text-gray-600">
           <p>
             By signing up, you agree to our{" "}
-            <span className="text-red-600 font-semibold">Terms & Conditions</span>
+            <span className="text-red-600 font-semibold">
+              Terms & Conditions
+            </span>
           </p>
         </div>
       </div>
