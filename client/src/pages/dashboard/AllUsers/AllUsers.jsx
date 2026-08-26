@@ -6,7 +6,7 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure.js";
 import useUsers from "../../../hooks/useUsers.js";
 
 const AllUsers = () => {
-  const { users, refetch } = useUsers();
+  const { users, refetch, isLoading } = useUsers();
   const [status, setStatus] = useState("");
   const axiosSecure = useAxiosSecure();
 
@@ -179,66 +179,66 @@ const AllUsers = () => {
 
       {/* Table Section */}
       <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
-        <div className="bg-red-600 px-6 py-4">
-          <h2 className="text-xl font-bold text-white">
-            {filteredUsers.length} User{filteredUsers.length !== 1 ? "s" : ""}
+        <div className="bg-red-600 px-4 md:px-6 py-4">
+          <h2 className="text-lg md:text-xl font-bold text-white">
+            {isLoading ? "Loading..." : `${filteredUsers.length} User${filteredUsers.length !== 1 ? "s" : ""}`}
           </h2>
         </div>
 
-        <div className="overflow-x-auto">
-          {filteredUsers.length > 0 ? (
-            <table className="w-full">
-              <thead className="bg-gray-100 border-b border-gray-300">
-                <tr>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                    #
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                    User Info
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                    Role
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {filteredUsers.map((user, index) => (
-                  <tr key={user._id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 text-sm font-semibold text-gray-900">
-                      {index + 1}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
-                          <img
-                            src={user?.avatarImage}
-                            alt={user?.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-gray-900">
-                            {user?.name}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            {user?.upazila}, {user?.district}
-                          </p>
-                        </div>
+        {isLoading ? (
+          <div className="flex justify-center items-center min-h-screen">
+            <span className="loading loading-spinner loading-lg text-red-600"></span>
+          </div>
+        ) : filteredUsers.length > 0 ? (
+          <>
+            {/* Mobile/Tablet Card View */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:hidden gap-4 p-4 md:p-6">
+              {filteredUsers.map((user, index) => (
+                <div
+                  key={user._id}
+                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow bg-white"
+                >
+                  <div className="space-y-3">
+                    {/* User Avatar and Basic Info */}
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                        <img
+                          src={user?.avatarImage}
+                          alt={user?.name}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-800">
-                      {user?.email}
-                    </td>
-                    <td className="px-6 py-4 text-sm">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-gray-900 truncate">
+                          {user?.name}
+                        </p>
+                        <p className="text-xs text-gray-500 truncate">
+                          {user?.upazila}, {user?.district}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Index and Role */}
+                    <div className="flex justify-between items-start">
+                      <span className="text-sm font-bold text-gray-900">#{index + 1}</span>
+                      <span
+                        className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${getRoleColor(
+                          user.role
+                        )}`}
+                      >
+                        {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                      </span>
+                    </div>
+
+                    {/* Email */}
+                    <div>
+                      <p className="text-xs text-gray-600 mb-1">Email</p>
+                      <p className="text-sm text-gray-800 break-all">{user?.email}</p>
+                    </div>
+
+                    {/* Status */}
+                    <div>
+                      <p className="text-xs text-gray-600 mb-1">Status</p>
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
                           user.status
@@ -247,67 +247,175 @@ const AllUsers = () => {
                         {user.status.charAt(0).toUpperCase() +
                           user.status.slice(1)}
                       </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm">
-                      <span
-                        className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getRoleColor(
-                          user.role
-                        )}`}
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {user.status === "active" && (
+                        <button
+                          onClick={() => handleBlock(user._id)}
+                          className="px-2 py-1.5 rounded-md bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition-colors flex-1 min-w-fit"
+                        >
+                          Block
+                        </button>
+                      )}
+                      {user.status === "blocked" && (
+                        <button
+                          onClick={() => handleActive(user._id)}
+                          className="px-2 py-1.5 rounded-md bg-green-600 hover:bg-green-700 text-white text-xs font-semibold transition-colors flex-1 min-w-fit"
+                        >
+                          Unblock
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleVolunteer(user._id)}
+                        className="px-2 py-1.5 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors flex-1 min-w-fit"
                       >
-                        {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm">
-                      <div className="flex gap-2 flex-wrap">
-                        {user.status === "active" && (
-                          <button
-                            onClick={() => handleBlock(user._id)}
-                            className="px-3 py-1 rounded-md bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition-colors"
-                          >
-                            Block
-                          </button>
-                        )}
-                        {user.status === "blocked" && (
-                          <button
-                            onClick={() => handleActive(user._id)}
-                            className="px-3 py-1 rounded-md bg-green-600 hover:bg-green-700 text-white text-xs font-semibold transition-colors"
-                          >
-                            Unblock
-                          </button>
-                        )}
-                        <button
-                          onClick={() => handleVolunteer(user._id)}
-                          className="px-3 py-1 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors"
-                        >
-                          Volunteer
-                        </button>
-                        <button
-                          onClick={() => handleAdmin(user._id)}
-                          className="px-3 py-1 rounded-md bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold transition-colors"
-                        >
-                          Admin
-                        </button>
-                        <button
-                          onClick={() => handleUserDelete(user._id)}
-                          className="px-3 py-1 rounded-md bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition-colors flex items-center gap-1"
-                        >
-                          <AiOutlineDelete className="text-sm" />
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <div className="p-8 text-center">
-              <p className="text-lg text-gray-600">
-                No users found matching the selected filter.
-              </p>
+                        Volunteer
+                      </button>
+                      <button
+                        onClick={() => handleAdmin(user._id)}
+                        className="px-2 py-1.5 rounded-md bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold transition-colors flex-1 min-w-fit"
+                      >
+                        Admin
+                      </button>
+                      <button
+                        onClick={() => handleUserDelete(user._id)}
+                        className="px-2 py-1.5 rounded-md bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition-colors flex-1 min-w-fit flex items-center justify-center gap-1"
+                      >
+                        <AiOutlineDelete className="text-sm" />
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-          )}
-        </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden lg:block overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-100 border-b border-gray-300">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                      #
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                      User Info
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                      Email
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                      Role
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {filteredUsers.map((user, index) => (
+                    <tr key={user._id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4 text-sm font-semibold text-gray-900">
+                        {index + 1}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                            <img
+                              src={user?.avatarImage}
+                              alt={user?.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-gray-900">
+                              {user?.name}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {user?.upazila}, {user?.district}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-800">
+                        {user?.email}
+                      </td>
+                      <td className="px-6 py-4 text-sm">
+                        <span
+                          className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
+                            user.status
+                          )}`}
+                        >
+                          {user.status.charAt(0).toUpperCase() +
+                            user.status.slice(1)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm">
+                        <span
+                          className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getRoleColor(
+                            user.role
+                          )}`}
+                        >
+                          {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm">
+                        <div className="flex gap-2 flex-wrap">
+                          {user.status === "active" && (
+                            <button
+                              onClick={() => handleBlock(user._id)}
+                              className="px-3 py-1 rounded-md bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition-colors"
+                            >
+                              Block
+                            </button>
+                          )}
+                          {user.status === "blocked" && (
+                            <button
+                              onClick={() => handleActive(user._id)}
+                              className="px-3 py-1 rounded-md bg-green-600 hover:bg-green-700 text-white text-xs font-semibold transition-colors"
+                            >
+                              Unblock
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleVolunteer(user._id)}
+                            className="px-3 py-1 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors"
+                          >
+                            Volunteer
+                          </button>
+                          <button
+                            onClick={() => handleAdmin(user._id)}
+                            className="px-3 py-1 rounded-md bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold transition-colors"
+                          >
+                            Admin
+                          </button>
+                          <button
+                            onClick={() => handleUserDelete(user._id)}
+                            className="px-3 py-1 rounded-md bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition-colors flex items-center gap-1"
+                          >
+                            <AiOutlineDelete className="text-sm" />
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        ) : (
+          <div className="p-8 text-center">
+            <p className="text-lg text-gray-600">
+              No users found matching the selected filter.
+            </p>
+          </div>
+        )}
 
         {/* Footer Stats */}
         {filteredUsers.length > 0 && (

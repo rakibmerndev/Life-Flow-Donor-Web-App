@@ -184,83 +184,124 @@ const Search = () => {
 
         {/* All Donors Table Section */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="bg-red-600 px-6 py-4">
-            <h2 className="text-xl font-bold text-white">
+          <div className="bg-red-600 px-4 md:px-6 py-4">
+            <h2 className="text-lg md:text-xl font-bold text-white">
               {isLoading
                 ? "Loading All Donors..."
                 : `All Available Donors (${users.length})`}
             </h2>
           </div>
 
-          <div className="overflow-x-auto">
-            {isLoading ? (
-              <div className="p-8 space-y-4">
-                <Stack>
-                  <Skeleton width="100%" height={40} variant="text" />
-                </Stack>
-                <Stack>
-                  <Skeleton width="100%" height={40} variant="text" />
-                </Stack>
-                <Stack>
-                  <Skeleton width="100%" height={40} variant="text" />
-                </Stack>
-              </div>
-            ) : (
-              <table className="w-full">
-                <thead className="bg-gray-100 border-b border-gray-300">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                      #
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                      Name
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                      Email
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                      Blood Group
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                      Upazila
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                      District
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {users.map((user, index) => (
-                    <tr
-                      key={user._id}
-                      className="hover:bg-gray-50 transition-colors"
-                    >
-                      <td className="px-6 py-4 text-sm font-semibold text-gray-900">
-                        {index + 1}
-                      </td>
-                      <td className="px-6 py-4 text-sm font-medium text-gray-800">
-                        {user?.name}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-800">
-                        {user?.email}
-                      </td>
-                      <td className="px-6 py-4 text-sm">
-                        <span className="inline-block px-3 py-1 rounded-full bg-red-100 text-red-800 font-semibold">
+          {isLoading ? (
+            <div className="p-8 space-y-4">
+              <Stack>
+                <Skeleton width="100%" height={40} variant="text" />
+              </Stack>
+              <Stack>
+                <Skeleton width="100%" height={40} variant="text" />
+              </Stack>
+              <Stack>
+                <Skeleton width="100%" height={40} variant="text" />
+              </Stack>
+            </div>
+          ) : (
+            <>
+              {/* Mobile/Tablet Card View */}
+              <div className="grid grid-cols-1 md:hidden gap-4 p-4 md:p-6">
+                {users.map((user, index) => (
+                  <div
+                    key={user._id}
+                    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow bg-white"
+                  >
+                    <div className="space-y-3">
+                      {/* Index and Blood Group */}
+                      <div className="flex justify-between items-start">
+                        <span className="text-sm font-bold text-gray-900">#{index + 1}</span>
+                        <span className="inline-block px-3 py-1 rounded-full bg-red-100 text-red-800 font-semibold text-sm">
                           {user?.bloodGroup}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-800">
-                        {user?.upazila}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-800">
-                        {user?.district}
-                      </td>
+                      </div>
+
+                      {/* Name */}
+                      <div>
+                        <p className="text-xs text-gray-600 mb-1">Name</p>
+                        <p className="font-semibold text-gray-900">{user?.name}</p>
+                      </div>
+
+                      {/* Email */}
+                      <div>
+                        <p className="text-xs text-gray-600 mb-1">Email</p>
+                        <p className="text-sm text-gray-800 break-all">{user?.email}</p>
+                      </div>
+
+                      {/* Location */}
+                      <div>
+                        <p className="text-xs text-gray-600 mb-1">Location</p>
+                        <p className="text-sm text-gray-800">{user?.upazila}, {user?.district}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-100 border-b border-gray-300">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                        #
+                      </th>
+                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                        Name
+                      </th>
+                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                        Email
+                      </th>
+                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                        Blood Group
+                      </th>
+                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                        Upazila
+                      </th>
+                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                        District
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {users.map((user, index) => (
+                      <tr
+                        key={user._id}
+                        className="hover:bg-gray-50 transition-colors"
+                      >
+                        <td className="px-6 py-4 text-sm font-semibold text-gray-900">
+                          {index + 1}
+                        </td>
+                        <td className="px-6 py-4 text-sm font-medium text-gray-800">
+                          {user?.name}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-800">
+                          {user?.email}
+                        </td>
+                        <td className="px-6 py-4 text-sm">
+                          <span className="inline-block px-3 py-1 rounded-full bg-red-100 text-red-800 font-semibold">
+                            {user?.bloodGroup}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-800">
+                          {user?.upazila}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-800">
+                          {user?.district}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
 
           {/* Footer Stats */}
           {!isLoading && users.length > 0 && (

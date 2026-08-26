@@ -70,78 +70,125 @@ const DonationHistory = () => {
 
         {/* Table Section */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="bg-red-600 px-6 py-4">
-            <h2 className="text-xl font-bold text-white">
+          <div className="bg-red-600 px-4 md:px-6 py-4">
+            <h2 className="text-lg md:text-xl font-bold text-white">
               {donations.length} Transaction{donations.length !== 1 ? "s" : ""}
             </h2>
           </div>
 
-          <div className="overflow-x-auto">
-            {isLoading ? (
-              <div className="p-8 text-center">
-                <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-red-600 border-t-transparent"></div>
-                <p className="text-gray-600 mt-4">Loading donation history...</p>
-              </div>
-            ) : donations.length > 0 ? (
-              <table className="w-full">
-                <thead className="bg-gray-100 border-b border-gray-300">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                      #
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                      Email
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                      Amount
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                      Transaction ID
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                      Date
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {donations.map((item, index) => (
-                    <tr key={item._id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 text-sm font-semibold text-gray-900">
-                        {index + 1}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-800">
-                        {item.email}
-                      </td>
-                      <td className="px-6 py-4 text-sm">
-                        <span className="inline-block px-3 py-1 rounded-full bg-green-100 text-green-800 font-bold">
+          {isLoading ? (
+            <div className="p-8 text-center">
+              <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-red-600 border-t-transparent"></div>
+              <p className="text-gray-600 mt-4">Loading donation history...</p>
+            </div>
+          ) : donations.length > 0 ? (
+            <>
+              {/* Mobile/Tablet Card View */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:hidden gap-4 p-4 md:p-6">
+                {donations.map((item, index) => (
+                  <div
+                    key={item._id}
+                    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow bg-white"
+                  >
+                    <div className="space-y-3">
+                      {/* Index and Amount */}
+                      <div className="flex justify-between items-start">
+                        <span className="text-sm font-bold text-gray-900">#{index + 1}</span>
+                        <span className="inline-block px-3 py-1 rounded-full bg-green-100 text-green-800 font-bold text-sm">
                           ${item.price.toFixed(2)}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-800">
-                        <span className="font-mono text-xs">{item.transactionId}</span>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-800">
-                        {new Date(item.date).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <div className="p-8 text-center">
-                <p className="text-lg text-gray-600 mb-6">
-                  You haven&apos;t made any donations yet.
-                </p>
-                <p className="text-gray-500">
-                  Your donation history will appear here when you contribute.
-                </p>
+                      </div>
+
+                      {/* Email */}
+                      <div>
+                        <p className="text-xs text-gray-600 mb-1">Email</p>
+                        <p className="text-sm text-gray-800 break-all">{item.email}</p>
+                      </div>
+
+                      {/* Date */}
+                      <div>
+                        <p className="text-xs text-gray-600 mb-1">Date</p>
+                        <p className="text-sm text-gray-800">
+                          {new Date(item.date).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </p>
+                      </div>
+
+                      {/* Transaction ID */}
+                      <div>
+                        <p className="text-xs text-gray-600 mb-1">Transaction ID</p>
+                        <p className="font-mono text-xs text-gray-800 break-all">{item.transactionId}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            )}
-          </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden lg:block overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-100 border-b border-gray-300">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                        #
+                      </th>
+                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                        Email
+                      </th>
+                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                        Amount
+                      </th>
+                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                        Transaction ID
+                      </th>
+                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                        Date
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {donations.map((item, index) => (
+                      <tr key={item._id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-6 py-4 text-sm font-semibold text-gray-900">
+                          {index + 1}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-800">
+                          {item.email}
+                        </td>
+                        <td className="px-6 py-4 text-sm">
+                          <span className="inline-block px-3 py-1 rounded-full bg-green-100 text-green-800 font-bold">
+                            ${item.price.toFixed(2)}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-800">
+                          <span className="font-mono text-xs">{item.transactionId}</span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-800">
+                          {new Date(item.date).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          ) : (
+            <div className="p-8 text-center">
+              <p className="text-lg text-gray-600 mb-6">
+                You haven&apos;t made any donations yet.
+              </p>
+              <p className="text-gray-500">
+                Your donation history will appear here when you contribute.
+              </p>
+            </div>
+          )}
 
           {/* Footer Stats */}
           {donations.length > 0 && (
