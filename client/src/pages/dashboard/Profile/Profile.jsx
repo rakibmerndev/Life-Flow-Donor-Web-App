@@ -104,35 +104,35 @@ const Profile = () => {
       </Helmet>
 
       {/* Profile Display Section */}
-      <div className="bg-white rounded-lg shadow-md p-6 md:p-8 mb-8">
-        <div className="flex flex-col md:flex-row gap-10 items-start">
-          <div>
+      <div className="bg-white rounded-lg shadow-md p-4 md:p-8 mb-8">
+        <div className="flex flex-col md:flex-row gap-6 md:gap-10 items-start">
+          <div className="flex-shrink-0">
             <img
               src={loggedInUser?.avatarImage || user?.photoURL}
               alt="Avatar"
-              className="w-36 h-36 rounded-lg object-cover shadow-md"
+              className="w-28 h-28 md:w-36 md:h-36 rounded-lg object-cover shadow-md"
             />
           </div>
-          <div className="flex-1 pt-2">
-            <h1 className="text-3xl font-bold text-gray-900 mb-6">
+          <div className="flex-1">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 md:mb-6">
               {loggedInUser?.name || user?.displayName}
             </h1>
-            <div className="space-y-3">
-              <div className="border-b pb-3">
-                <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Email</p>
-                <p className="text-lg text-gray-800">{loggedInUser?.email || user?.email}</p>
+            <div className="space-y-2 md:space-y-3">
+              <div className="border-b pb-2 md:pb-3">
+                <p className="text-xs md:text-sm font-semibold text-gray-600 uppercase tracking-wide">Email</p>
+                <p className="text-sm md:text-lg text-gray-800 break-all">{loggedInUser?.email || user?.email}</p>
               </div>
-              <div className="border-b pb-3">
-                <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Blood Group</p>
-                <p className="text-lg font-bold text-red-600">{loggedInUser?.bloodGroup}</p>
+              <div className="border-b pb-2 md:pb-3">
+                <p className="text-xs md:text-sm font-semibold text-gray-600 uppercase tracking-wide">Blood Group</p>
+                <p className="text-sm md:text-lg font-bold text-red-600">{loggedInUser?.bloodGroup}</p>
               </div>
-              <div className="border-b pb-3">
-                <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Location</p>
-                <p className="text-lg text-gray-800">{loggedInUser?.upazila}, {loggedInUser?.district}</p>
+              <div className="border-b pb-2 md:pb-3">
+                <p className="text-xs md:text-sm font-semibold text-gray-600 uppercase tracking-wide">Location</p>
+                <p className="text-sm md:text-lg text-gray-800">{loggedInUser?.upazila}, {loggedInUser?.district}</p>
               </div>
-              <div className="border-b pb-3">
-                <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Status</p>
-                <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
+              <div className="border-b pb-2 md:pb-3">
+                <p className="text-xs md:text-sm font-semibold text-gray-600 uppercase tracking-wide">Status</p>
+                <span className={`inline-block px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-semibold ${
                   loggedInUser?.status === "active"
                     ? "bg-green-100 text-green-800"
                     : "bg-red-100 text-red-800"
@@ -141,8 +141,8 @@ const Profile = () => {
                 </span>
               </div>
               <div>
-                <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Role</p>
-                <p className="text-lg text-gray-800 capitalize">{loggedInUser?.role}</p>
+                <p className="text-xs md:text-sm font-semibold text-gray-600 uppercase tracking-wide">Role</p>
+                <p className="text-sm md:text-lg text-gray-800 capitalize">{loggedInUser?.role}</p>
               </div>
             </div>
           </div>
@@ -150,7 +150,7 @@ const Profile = () => {
 
         <button
           onClick={handleEditProfile}
-          className="mt-8 py-2 px-6 rounded-md font-semibold bg-red-600 hover:bg-red-700 text-white transition-colors duration-200"
+          className="mt-6 md:mt-8 py-2 px-6 rounded-md font-semibold bg-red-600 hover:bg-red-700 text-white transition-colors duration-200 w-full sm:w-auto text-sm md:text-base"
         >
           {editProfile ? "Cancel" : "Edit Profile"}
         </button>
@@ -161,13 +161,13 @@ const Profile = () => {
         <section className="mb-8">
           {currentUser.map((user) => (
             <div key={user._id} className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <div className="bg-red-600 px-8 py-6">
-                <h3 className="text-2xl font-bold text-white text-center">Update Your Profile</h3>
+              <div className="bg-red-600 px-4 md:px-8 py-4 md:py-6">
+                <h3 className="text-lg md:text-2xl font-bold text-white text-center">Update Your Profile</h3>
               </div>
 
-              <form onSubmit={handleSubmit(onSubmit)} className="p-8">
+              <form onSubmit={handleSubmit(onSubmit)} className="p-4 md:p-8 space-y-6">
                 {/* Name Field */}
-                <div className="mb-6">
+                <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Full Name <span className="text-red-600">*</span>
                   </label>
@@ -175,31 +175,31 @@ const Profile = () => {
                     {...register("name", { required: true })}
                     type="text"
                     defaultValue={user.name}
-                    className="w-full md:w-1/2 py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
+                    className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
                   />
                 </div>
 
                 {/* Photo Upload */}
-                <div className="mb-6">
+                <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Profile Photo <span className="text-red-600">*</span>
                   </label>
                   <input
                     {...register("image", { required: false })}
                     type="file"
-                    className="file-input file-input-bordered file-input-sm w-full max-w-xs border-gray-300"
+                    className="file-input file-input-bordered file-input-sm w-full border-gray-300 text-sm"
                   />
                 </div>
 
                 {/* Blood Group */}
-                <div className="mb-6">
+                <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Blood Group <span className="text-red-600">*</span>
                   </label>
                   <select
                     defaultValue={user.bloodGroup}
                     {...register("group", { required: true })}
-                    className="w-full md:w-1/2 py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
+                    className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
                   >
                     <option value="A+">A+</option>
                     <option value="A-">A-</option>
@@ -213,7 +213,7 @@ const Profile = () => {
                 </div>
 
                 {/* District & Upazila */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
                       District <span className="text-red-600">*</span>
@@ -257,10 +257,10 @@ const Profile = () => {
                 </div>
 
                 {/* Submit Button */}
-                <div className="flex gap-4">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 pt-4">
                   <button
                     type="submit"
-                    className="py-2 px-6 rounded-md font-semibold bg-red-600 hover:bg-red-700 text-white transition-colors duration-200"
+                    className="w-full sm:w-auto py-2 px-6 rounded-md font-semibold bg-red-600 hover:bg-red-700 text-white transition-colors duration-200 text-sm md:text-base"
                   >
                     Update Profile
                   </button>

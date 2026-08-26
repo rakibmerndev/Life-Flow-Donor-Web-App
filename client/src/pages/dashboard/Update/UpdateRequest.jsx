@@ -87,15 +87,15 @@ const UpdateRequest = () => {
         {/* Form Card */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           {/* Card Header */}
-          <div className="bg-red-600 px-6 py-4">
-            <h2 className="text-xl font-bold text-white">Request Details</h2>
+          <div className="bg-red-600 px-4 md:px-6 py-4">
+            <h2 className="text-lg md:text-xl font-bold text-white">Request Details</h2>
           </div>
 
           {/* Card Body */}
-          <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="p-4 md:p-8 space-y-6">
             {/* Recipient Information */}
             <div className="mb-8">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6 border-b pb-3">
+              <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-6 border-b pb-3">
                 Recipient Information
               </h3>
 
@@ -108,7 +108,7 @@ const UpdateRequest = () => {
                   {...register("name", { required: true })}
                   type="text"
                   defaultValue={requests.recipientName}
-                  className="w-full md:w-1/2 py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
+                  className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
                 />
               </div>
 
@@ -120,7 +120,7 @@ const UpdateRequest = () => {
                 <select
                   defaultValue={requests.requiredBloodGroup}
                   {...register("requiredGroup", { required: true })}
-                  className="w-full md:w-1/2 py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
+                  className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
                 >
                   <option value="A+">A+</option>
                   <option value="A-">A-</option>
@@ -136,12 +136,12 @@ const UpdateRequest = () => {
 
             {/* Location Information */}
             <div className="mb-8">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6 border-b pb-3">
+              <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-6 border-b pb-3">
                 Location Details
               </h3>
 
               {/* District & Upazila */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     District <span className="text-red-600">*</span>
@@ -193,7 +193,7 @@ const UpdateRequest = () => {
                   defaultValue={requests.hospitalName}
                   {...register("hospital", { required: true })}
                   type="text"
-                  className="w-full md:w-1/2 py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
+                  className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
                 />
               </div>
 
@@ -206,19 +206,19 @@ const UpdateRequest = () => {
                   defaultValue={requests.fullAddress}
                   {...register("address", { required: true })}
                   type="text"
-                  className="w-full md:w-1/2 py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
+                  className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
                 />
               </div>
             </div>
 
             {/* Donation Details */}
             <div className="mb-8">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6 border-b pb-3">
+              <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-6 border-b pb-3">
                 Donation Timing
               </h3>
 
               {/* Date & Time */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Donation Date <span className="text-red-600">*</span>
@@ -246,7 +246,7 @@ const UpdateRequest = () => {
 
             {/* Message */}
             <div className="mb-8">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6 border-b pb-3">
+              <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-6 border-b pb-3">
                 Additional Information
               </h3>
 
@@ -258,24 +258,24 @@ const UpdateRequest = () => {
                   defaultValue={requests.message}
                   {...register("details", { required: true })}
                   placeholder="Describe why you need blood donation and any other relevant details"
-                  rows="5"
-                  className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 resize-none"
+                  rows="4"
+                  className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 resize-none text-sm md:text-base"
                 />
               </div>
             </div>
 
             {/* Form Actions */}
-            <div className="border-t pt-6 flex gap-3">
+            <div className="border-t pt-6 flex flex-col sm:flex-row gap-2 sm:gap-3">
               <button
                 type="submit"
-                className="px-6 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white font-semibold transition-colors"
+                className="w-full sm:w-auto px-6 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white font-semibold transition-colors text-sm sm:text-base"
               >
                 Update Request
               </button>
               <button
                 type="button"
                 onClick={() => reset()}
-                className="px-6 py-2 rounded-md border-2 border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
+                className="w-full sm:w-auto px-6 py-2 rounded-md border-2 border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition-colors text-sm sm:text-base"
               >
                 Reset
               </button>
