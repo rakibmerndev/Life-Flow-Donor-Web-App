@@ -125,8 +125,22 @@ async function run() {
     // get the users
 
     app.get("/user", verifyToken, verifyAdmin, async (req, res) => {
-      const result = await usersCollection.find().toArray();
-      res.send(result);
+
+      // pagination
+      const { page } = req.query;
+      const limit = 10;
+      const skip = (page - 1) * limit;
+      const totalUsers = await usersCollection.countDocuments();
+      const totalPages = Math.ceil(totalUsers / limit);
+      const users = await usersCollection
+        .find()
+        .skip(skip)
+        .limit(limit)
+        .toArray();
+
+      const result = { page, totalUsers, totalPages, users };
+
+      res.status(200).send(result);
     });
 
     // get particular user

@@ -1,14 +1,19 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet";
-import Swal from "sweetalert2";
 import { AiOutlineDelete } from "react-icons/ai";
+import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/useAxiosSecure.js";
 import useUsers from "../../../hooks/useUsers.js";
 
 const AllUsers = () => {
-  const { users, refetch, isLoading } = useUsers();
+  const { users, refetch, isLoading, totalUsers, totalPages, currentPage, setPage } = useUsers();
   const [status, setStatus] = useState("");
   const axiosSecure = useAxiosSecure();
+
+  const pageNumbers = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
 
   const handleBlock = async (id) => {
     const res = await axiosSecure.patch(`/users/block/${id}`);
@@ -158,7 +163,9 @@ const AllUsers = () => {
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
           All Users
         </h1>
-        <p className="text-gray-600 mt-2">Manage and monitor all system users</p>
+        <p className="text-gray-600 mt-2">
+          Manage and monitor all system users
+        </p>
       </div>
 
       {/* Filter Section */}
@@ -181,7 +188,9 @@ const AllUsers = () => {
       <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="bg-red-600 px-4 md:px-6 py-4">
           <h2 className="text-lg md:text-xl font-bold text-white">
-            {isLoading ? "Loading..." : `${filteredUsers.length} User${filteredUsers.length !== 1 ? "s" : ""}`}
+            {isLoading
+              ? "Loading..."
+              : `${filteredUsers.length} User${filteredUsers.length !== 1 ? "s" : ""}`}
           </h2>
         </div>
 
@@ -220,10 +229,12 @@ const AllUsers = () => {
 
                     {/* Index and Role */}
                     <div className="flex justify-between items-start">
-                      <span className="text-sm font-bold text-gray-900">#{index + 1}</span>
+                      <span className="text-sm font-bold text-gray-900">
+                        #{index + 1}
+                      </span>
                       <span
                         className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${getRoleColor(
-                          user.role
+                          user.role,
                         )}`}
                       >
                         {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
@@ -233,7 +244,9 @@ const AllUsers = () => {
                     {/* Email */}
                     <div>
                       <p className="text-xs text-gray-600 mb-1">Email</p>
-                      <p className="text-sm text-gray-800 break-all">{user?.email}</p>
+                      <p className="text-sm text-gray-800 break-all">
+                        {user?.email}
+                      </p>
                     </div>
 
                     {/* Status */}
@@ -241,7 +254,7 @@ const AllUsers = () => {
                       <p className="text-xs text-gray-600 mb-1">Status</p>
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
-                          user.status
+                          user.status,
                         )}`}
                       >
                         {user.status.charAt(0).toUpperCase() +
@@ -319,7 +332,10 @@ const AllUsers = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {filteredUsers.map((user, index) => (
-                    <tr key={user._id} className="hover:bg-gray-50 transition-colors">
+                    <tr
+                      key={user._id}
+                      className="hover:bg-gray-50 transition-colors"
+                    >
                       <td className="px-6 py-4 text-sm font-semibold text-gray-900">
                         {index + 1}
                       </td>
@@ -348,7 +364,7 @@ const AllUsers = () => {
                       <td className="px-6 py-4 text-sm">
                         <span
                           className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
-                            user.status
+                            user.status,
                           )}`}
                         >
                           {user.status.charAt(0).toUpperCase() +
@@ -358,10 +374,11 @@ const AllUsers = () => {
                       <td className="px-6 py-4 text-sm">
                         <span
                           className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getRoleColor(
-                            user.role
+                            user.role,
                           )}`}
                         >
-                          {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                          {user.role.charAt(0).toUpperCase() +
+                            user.role.slice(1)}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm">
@@ -421,12 +438,48 @@ const AllUsers = () => {
         {filteredUsers.length > 0 && (
           <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
             <p className="text-sm text-gray-600">
-              Showing <span className="font-semibold">{filteredUsers.length}</span> of{" "}
-              <span className="font-semibold">{users.length}</span> total users
+              Showing{" "}
+              <span className="font-semibold">{filteredUsers.length}</span> of{" "}
+              <span className="font-semibold">{totalUsers}</span> total users
             </p>
           </div>
         )}
       </div>
+
+      {/* Pagination Buttons */}
+      {totalPages > 1 && (
+        <div className="max-w-7xl mx-auto mt-8 flex justify-center gap-2 flex-wrap">
+          <button
+            onClick={() => setPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold transition-colors"
+          >
+            Previous
+          </button>
+
+          {pageNumbers.map((num) => (
+            <button
+              key={num}
+              onClick={() => setPage(num)}
+              className={`px-4 py-2 rounded-md font-semibold transition-colors ${
+                currentPage === num
+                  ? "bg-red-600 text-white"
+                  : "bg-gray-200 text-gray-900 hover:bg-gray-300"
+              }`}
+            >
+              {num}
+            </button>
+          ))}
+
+          <button
+            onClick={() => setPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold transition-colors"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };
