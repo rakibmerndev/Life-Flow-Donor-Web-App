@@ -79,7 +79,7 @@ const AddBlog = () => {
           time: new Date(),
         };
 
-        const result = await axiosSecure.post("/addBlog", blogData);
+        const result = await axiosSecure.post("/blogs", blogData);
         if (result.data.insertedId) {
           reset();
           // Reset editor

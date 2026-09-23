@@ -6,7 +6,15 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure.js";
 import useUsers from "../../../hooks/useUsers.js";
 
 const AllUsers = () => {
-  const { users, refetch, isLoading, totalUsers, totalPages, currentPage, setPage } = useUsers();
+  const {
+    users,
+    refetch,
+    isLoading,
+    totalUsers,
+    totalPages,
+    currentPage,
+    setPage,
+  } = useUsers();
   const [status, setStatus] = useState("");
   const axiosSecure = useAxiosSecure();
 
@@ -114,7 +122,7 @@ const AllUsers = () => {
       confirmButtonText: "Yes, delete!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const res = await axiosSecure.delete(`/user/delete/${id}`);
+        const res = await axiosSecure.delete(`/users/delete/${id}`);
         if (res.data.deletedCount > 0) {
           refetch();
           Swal.fire({

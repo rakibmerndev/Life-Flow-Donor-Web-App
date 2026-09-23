@@ -7,7 +7,7 @@ const useUserRequests = () => {
   const { user } = useAuth();
 
   const axiosSecure = useAxiosSecure();
-  const url = `/currentUserRequests?email=${user?.email}`;
+  const url = `/current-user-requests?email=${user?.email}`;
   const { data: requests = [], refetch } = useQuery({
     queryKey: ["requests", user?.email],
     queryFn: async () => {
