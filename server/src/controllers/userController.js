@@ -12,17 +12,24 @@ const createUser = async (req, res) => {
   }
 };
 
-// Get all users with pagination (Admin only)
+// Get all users with pagination and filtering (Admin only)
 const getAllUsers = async (req, res) => {
   try {
     const usersCollection = req.app.locals.usersCollection;
-    const { page } = req.query;
+    const { page, status } = req.query;
     const limit = 10;
     const skip = (page - 1) * limit;
-    const totalUsers = await usersCollection.countDocuments();
+
+    // Build filter query
+    const query = {};
+    if (status && status !== "") {
+      query.status = status;
+    }
+
+    const totalUsers = await usersCollection.countDocuments(query);
     const totalPages = Math.ceil(totalUsers / limit);
     const users = await usersCollection
-      .find()
+      .find(query)
       .skip(skip)
       .limit(limit)
       .toArray();

@@ -1,26 +1,31 @@
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import useAxiosPublic from "../../../hooks/useAxiosPublic.js";
+
 import useAxiosSecure from "../../../hooks/useAxiosSecure.js";
 import useCurrentUser from "../../../hooks/useCurrentUser.js";
+import useRequests from "../../../hooks/useRequests.js";
+import { getPageNumbers } from "../../../lib/getPageNumbers.js";
 
 const AllBgRequests = () => {
-  const axiosPublic = useAxiosPublic();
   const axiosSecure = useAxiosSecure();
-  const { data: allRequests = [], refetch } = useQuery({
-    queryKey: ["all-requests"],
-    queryFn: async () => {
-      const res = await axiosPublic.get("/request");
-      return res.data;
-    },
-  });
-
-  const [status, setStatus] = useState("");
+  const {
+    requests,
+    refetch,
+    totalPages,
+    currentPage,
+    setPage,
+    totalRequests,
+    status,
+    setStatus,
+  } = useRequests();
 
   const { currentUser } = useCurrentUser();
+  const pageNumbers = getPageNumbers(totalPages);
+
+  const handleStatusChange = (e) => {
+    setStatus(e.target.value);
+  };
 
   const handleCancel = async (id) => {
     const data = {
@@ -67,10 +72,6 @@ const AllBgRequests = () => {
     });
   };
 
-  const filteredRequest = allRequests.filter(
-    (request) => status === "" || request.donationStatus === status,
-  );
-
   return (
     <div className="bg-gray-50 min-h-screen p-4 md:p-8">
       <Helmet>
@@ -94,7 +95,7 @@ const AllBgRequests = () => {
         </label>
         <select
           value={status}
-          onChange={(e) => setStatus(e.target.value)}
+          onChange={handleStatusChange}
           className="w-full md:w-64 py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
         >
           <option value="">All Requests</option>
@@ -109,16 +110,16 @@ const AllBgRequests = () => {
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="bg-red-600 px-4 md:px-6 py-4">
           <h2 className="text-lg md:text-xl font-bold text-white">
-            {filteredRequest.length}{" "}
-            {filteredRequest.length === 1 ? "Request" : "Requests"} Found
+            {requests.length}{" "}
+            {requests.length === 1 ? "Request" : "Requests"} Found
           </h2>
         </div>
 
-        {filteredRequest.length > 0 ? (
+        {requests.length > 0 ? (
           <>
             {/* Mobile/Tablet Card View */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:hidden gap-4 p-4 md:p-6">
-              {filteredRequest.map((request, index) => (
+              {requests.map((request, index) => (
                 <div
                   key={request._id}
                   className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow bg-white"
@@ -276,7 +277,7 @@ const AllBgRequests = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {filteredRequest.map((request, index) => (
+                  {requests.map((request, index) => (
                     <tr
                       key={request._id}
                       className="hover:bg-gray-50 transition-colors"
@@ -392,17 +393,51 @@ const AllBgRequests = () => {
         )}
 
         {/* Footer Stats */}
-        {filteredRequest.length > 0 && (
+        {requests.length > 0 && (
           <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
             <p className="text-sm text-gray-600">
               Showing{" "}
-              <span className="font-semibold">{filteredRequest.length}</span> of{" "}
-              <span className="font-semibold">{allRequests.length}</span> total
+              <span className="font-semibold">{requests.length}</span> of{" "}
+              <span className="font-semibold">{totalRequests}</span> total
               requests
             </p>
           </div>
         )}
       </div>
+      {/* Pagination Buttons */}
+      {totalPages > 1 && (
+        <div className="max-w-7xl mx-auto mt-8 flex justify-center gap-2 flex-wrap">
+          <button
+            onClick={() => setPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold transition-colors"
+          >
+            Previous
+          </button>
+
+          {pageNumbers.map((num) => (
+            <button
+              key={num}
+              onClick={() => setPage(num)}
+              className={`px-4 py-2 rounded-md font-semibold transition-colors ${
+                currentPage === num
+                  ? "bg-red-600 text-white"
+                  : "bg-gray-200 text-gray-900 hover:bg-gray-300"
+              }`}
+            >
+              {num}
+            </button>
+          ))}
+
+          <button
+            onClick={() => setPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold transition-colors"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };

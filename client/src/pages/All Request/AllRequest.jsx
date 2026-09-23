@@ -1,29 +1,24 @@
-import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import useAxiosPublic from "../../hooks/useAxiosPublic.js";
-import { useState } from "react";
+import useRequests from "../../hooks/useRequests.js";
+import { getPageNumbers } from "../../lib/getPageNumbers.js";
 import LoadingSkeleton from "./LoadingSkeleton";
 
 const AllRequest = () => {
-  const axiosPublic = useAxiosPublic();
-  const { data: requests = [], isLoading } = useQuery({
-    queryKey: ["requests"],
-    queryFn: async () => {
-      const res = await axiosPublic.get("/request");
-      return res.data;
-    },
-  });
-
-  const [selectedFilter, setSelectedFilter] = useState("");
-
-  const filteredRequests =
-    selectedFilter === ""
-      ? requests
-      : requests.filter((request) => request.donationStatus === selectedFilter);
+  const {
+    requests,
+    isLoading,
+    currentPage,
+    setPage,
+    totalPages,
+    totalRequests,
+    status,
+    setStatus,
+  } = useRequests();
+  const pageNumbers = getPageNumbers(totalPages);
 
   const handleSelect = (e) => {
-    setSelectedFilter(e.target.value);
+    setStatus(e.target.value);
   };
 
   return (
@@ -50,7 +45,7 @@ const AllRequest = () => {
         <select
           name="select-request"
           onChange={handleSelect}
-          value={selectedFilter}
+          value={status}
           className="w-full md:w-64 py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 text-gray-800"
         >
           <option value="">All Requests</option>
@@ -65,7 +60,9 @@ const AllRequest = () => {
       <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="bg-red-600 px-4 md:px-6 py-4">
           <h2 className="text-lg md:text-xl font-bold text-white">
-            {isLoading ? "Loading..." : `${filteredRequests.length} Request${filteredRequests.length !== 1 ? "s" : ""}`}
+            {isLoading
+              ? "Loading..."
+              : `${totalRequests} Request${totalRequests !== 1 ? "s" : ""}`}
           </h2>
         </div>
 
@@ -73,25 +70,30 @@ const AllRequest = () => {
           <div className="p-8">
             <LoadingSkeleton />
           </div>
-        ) : filteredRequests.length > 0 ? (
+        ) : requests.length > 0 ? (
           <>
             {/* Mobile/Tablet Card View */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:hidden gap-4 p-4 md:p-6">
-              {filteredRequests.map((request, index) => (
-                <div key={request._id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow bg-white">
+              {requests.map((request, index) => (
+                <div
+                  key={request._id}
+                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow bg-white"
+                >
                   <div className="space-y-3">
                     {/* Request Number and Status */}
                     <div className="flex justify-between items-start">
-                      <span className="text-sm font-bold text-gray-900">#{index + 1}</span>
+                      <span className="text-sm font-bold text-gray-900">
+                        #{index + 1}
+                      </span>
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
                           request.donationStatus === "pending"
                             ? "bg-yellow-100 text-yellow-800"
                             : request.donationStatus === "inprogress"
-                            ? "bg-blue-100 text-blue-800"
-                            : request.donationStatus === "done"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
+                              ? "bg-blue-100 text-blue-800"
+                              : request.donationStatus === "done"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
                         }`}
                       >
                         {request.donationStatus === "inprogress"
@@ -104,7 +106,9 @@ const AllRequest = () => {
                     {/* Recipient Info */}
                     <div>
                       <p className="text-xs text-gray-600 mb-1">Recipient</p>
-                      <p className="font-semibold text-gray-900">{request.recipientName}</p>
+                      <p className="font-semibold text-gray-900">
+                        {request.recipientName}
+                      </p>
                     </div>
 
                     {/* Blood Group */}
@@ -118,24 +122,33 @@ const AllRequest = () => {
                     {/* Location */}
                     <div>
                       <p className="text-xs text-gray-600 mb-1">Location</p>
-                      <p className="text-sm text-gray-800">{request.upazila}, {request.district}</p>
+                      <p className="text-sm text-gray-800">
+                        {request.upazila}, {request.district}
+                      </p>
                     </div>
 
                     {/* Date & Time */}
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <p className="text-xs text-gray-600 mb-1">Date</p>
-                        <p className="text-sm text-gray-800">{request.donationDate}</p>
+                        <p className="text-sm text-gray-800">
+                          {request.donationDate}
+                        </p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-600 mb-1">Time</p>
-                        <p className="text-sm text-gray-800">{request.donationTime}</p>
+                        <p className="text-sm text-gray-800">
+                          {request.donationTime}
+                        </p>
                       </div>
                     </div>
 
                     {/* Action Button */}
                     <div className="pt-2">
-                      <Link to={`/dashboard/details/${request._id}`} className="w-full block">
+                      <Link
+                        to={`/dashboard/details/${request._id}`}
+                        className="w-full block"
+                      >
                         <button className="w-full px-4 py-2.5 rounded-md bg-red-600 hover:bg-red-700 text-white font-semibold transition-colors text-sm">
                           View Details
                         </button>
@@ -151,7 +164,9 @@ const AllRequest = () => {
               <table className="w-full">
                 <thead className="bg-gray-100 border-b border-gray-300">
                   <tr>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">#</th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                      #
+                    </th>
                     <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
                       Recipient Name
                     </th>
@@ -173,8 +188,11 @@ const AllRequest = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {filteredRequests.map((request, index) => (
-                    <tr key={request._id} className="hover:bg-gray-50 transition-colors">
+                  {requests.map((request, index) => (
+                    <tr
+                      key={request._id}
+                      className="hover:bg-gray-50 transition-colors"
+                    >
                       <td className="px-6 py-4 text-sm font-semibold text-gray-900">
                         {index + 1}
                       </td>
@@ -192,7 +210,9 @@ const AllRequest = () => {
                       <td className="px-6 py-4 text-sm text-gray-800">
                         <div>
                           <p>{request.donationDate}</p>
-                          <p className="text-xs text-gray-500">{request.donationTime}</p>
+                          <p className="text-xs text-gray-500">
+                            {request.donationTime}
+                          </p>
                         </div>
                       </td>
                       <td className="px-6 py-4 text-sm">
@@ -201,10 +221,10 @@ const AllRequest = () => {
                             request.donationStatus === "pending"
                               ? "bg-yellow-100 text-yellow-800"
                               : request.donationStatus === "inprogress"
-                              ? "bg-blue-100 text-blue-800"
-                              : request.donationStatus === "done"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-red-100 text-red-800"
+                                ? "bg-blue-100 text-blue-800"
+                                : request.donationStatus === "done"
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-red-100 text-red-800"
                           }`}
                         >
                           {request.donationStatus === "inprogress"
@@ -240,15 +260,51 @@ const AllRequest = () => {
         )}
 
         {/* Footer Stats */}
-        {!isLoading && filteredRequests.length > 0 && (
+        {!isLoading && requests.length > 0 && (
           <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
             <p className="text-sm text-gray-600">
-              Showing <span className="font-semibold">{filteredRequests.length}</span> of{" "}
-              <span className="font-semibold">{requests.length}</span> total requests
+              Showing{" "}
+              <span className="font-semibold">{requests.length}</span> of{" "}
+              <span className="font-semibold">{totalRequests}</span> total
+              requests
             </p>
           </div>
         )}
       </div>
+      {/* Pagination Buttons */}
+      {totalPages > 1 && (
+        <div className="max-w-7xl mx-auto mt-8 flex justify-center gap-2 flex-wrap">
+          <button
+            onClick={() => setPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold transition-colors"
+          >
+            Previous
+          </button>
+
+          {pageNumbers.map((num) => (
+            <button
+              key={num}
+              onClick={() => setPage(num)}
+              className={`px-4 py-2 rounded-md font-semibold transition-colors ${
+                currentPage === num
+                  ? "bg-red-600 text-white"
+                  : "bg-gray-200 text-gray-900 hover:bg-gray-300"
+              }`}
+            >
+              {num}
+            </button>
+          ))}
+
+          <button
+            onClick={() => setPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold transition-colors"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,24 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import useAxiosSecure from "./useAxiosSecure";
+import useAxiosPublic from "./useAxiosPublic";
 
-const useUsers = () => {
-  const axiosSecure = useAxiosSecure();
+const useRequests = () => {
+  const axiosPublic = useAxiosPublic();
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState("");
 
   const {
-    data = {},
+    data = [],
     refetch,
     isLoading,
   } = useQuery({
-    queryKey: ["users", page, status],
+    queryKey: ["all-requests", page, status],
     queryFn: async () => {
       const params = new URLSearchParams({ page });
       if (status && status !== "") {
         params.append("status", status);
       }
-      const res = await axiosSecure.get(`/user?${params.toString()}`);
+      const res = await axiosPublic.get(`/request?${params.toString()}`);
       return res.data;
     },
   });
@@ -29,16 +29,16 @@ const useUsers = () => {
   };
 
   return {
-    users: data.users || [],
-    totalUsers: data.totalUsers || 0,
-    totalPages: data.totalPages || 0,
+    requests: data.requests || [],
+    refetch,
+    isLoading,
     currentPage: page,
     setPage,
     status,
     setStatus: handleStatusChange,
-    refetch,
-    isLoading,
+    totalRequests: data.totalRequests,
+    totalPages: data.totalPages,
   };
 };
 
-export default useUsers;
+export default useRequests;

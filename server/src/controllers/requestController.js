@@ -12,11 +12,29 @@ const createRequest = async (req, res) => {
   }
 };
 
-// Get all requests
+// Get all requests with pagination and filtering
 const getAllRequests = async (req, res) => {
   try {
     const requestsCollection = req.app.locals.requestsCollection;
-    const result = await requestsCollection.find().toArray();
+    const { page, status } = req.query;
+    const limit = 10;
+    const skip = (page - 1) * limit;
+
+    // Build filter query
+    const query = {};
+    if (status && status !== "") {
+      query.donationStatus = status;
+    }
+
+    const totalRequests = await requestsCollection.countDocuments(query);
+    const totalPages = Math.ceil(totalRequests / limit);
+    const requests = await requestsCollection
+      .find(query)
+      .skip(skip)
+      .limit(limit)
+      .toArray();
+
+    const result = { page, totalRequests, totalPages, requests };
     res.status(200).send(result);
   } catch (error) {
     res.status(500).send({ message: error.message });

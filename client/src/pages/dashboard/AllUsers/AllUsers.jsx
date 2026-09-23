@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { Helmet } from "react-helmet";
 import { AiOutlineDelete } from "react-icons/ai";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/useAxiosSecure.js";
 import useUsers from "../../../hooks/useUsers.js";
+import { getPageNumbers } from "../../../lib/getPageNumbers.js";
 
 const AllUsers = () => {
   const {
@@ -14,14 +14,12 @@ const AllUsers = () => {
     totalPages,
     currentPage,
     setPage,
+    status,
+    setStatus,
   } = useUsers();
-  const [status, setStatus] = useState("");
   const axiosSecure = useAxiosSecure();
 
-  const pageNumbers = [];
-  for (let i = 1; i <= totalPages; i++) {
-    pageNumbers.push(i);
-  }
+  const pageNumbers = getPageNumbers(totalPages);
 
   const handleBlock = async (id) => {
     const res = await axiosSecure.patch(`/users/block/${id}`);
@@ -139,10 +137,6 @@ const AllUsers = () => {
     });
   };
 
-  const filteredUsers = users.filter(
-    (user) => status === "" || user.status === status,
-  );
-
   const getRoleColor = (role) => {
     switch (role) {
       case "admin":
@@ -198,7 +192,7 @@ const AllUsers = () => {
           <h2 className="text-lg md:text-xl font-bold text-white">
             {isLoading
               ? "Loading..."
-              : `${filteredUsers.length} User${filteredUsers.length !== 1 ? "s" : ""}`}
+              : `${totalUsers} User${totalUsers !== 1 ? "s" : ""}`}
           </h2>
         </div>
 
@@ -206,11 +200,11 @@ const AllUsers = () => {
           <div className="flex justify-center items-center min-h-screen">
             <span className="loading loading-spinner loading-lg text-red-600"></span>
           </div>
-        ) : filteredUsers.length > 0 ? (
+        ) : users.length > 0 ? (
           <>
             {/* Mobile/Tablet Card View */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:hidden gap-4 p-4 md:p-6">
-              {filteredUsers.map((user, index) => (
+              {users.map((user, index) => (
                 <div
                   key={user._id}
                   className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow bg-white"
@@ -339,7 +333,7 @@ const AllUsers = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {filteredUsers.map((user, index) => (
+                  {users.map((user, index) => (
                     <tr
                       key={user._id}
                       className="hover:bg-gray-50 transition-colors"
@@ -443,11 +437,11 @@ const AllUsers = () => {
         )}
 
         {/* Footer Stats */}
-        {filteredUsers.length > 0 && (
+        {users.length > 0 && (
           <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
             <p className="text-sm text-gray-600">
               Showing{" "}
-              <span className="font-semibold">{filteredUsers.length}</span> of{" "}
+              <span className="font-semibold">{users.length}</span> of{" "}
               <span className="font-semibold">{totalUsers}</span> total users
             </p>
           </div>
