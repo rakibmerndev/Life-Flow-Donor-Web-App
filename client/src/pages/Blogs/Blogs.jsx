@@ -14,7 +14,7 @@ const Blogs = () => {
         <title>LifeFlowDonor | Blogs</title>
       </Helmet>
       {isLoading ? (
-        <div className=" flex justify-center items-center">
+        <div className="min-h-[calc(100vh-224px)] flex justify-center items-center">
           <div className="pt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  gap-5">
             <Stack>
               <Skeleton
