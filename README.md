@@ -14,6 +14,7 @@ A MERN stack blood donation platform that connects donors with recipients, built
 - User profile management with image upload
 - Password visibility toggle in login/signup forms
 - Responsive design with professional UI/UX
+- Advanced filtering and pagination for requests and users
 
 ## Tech Stack
 
@@ -33,6 +34,38 @@ A MERN stack blood donation platform that connects donors with recipients, built
 5. Admins can create and publish blogs
 
 ## Backend Architecture
+
+### Filtering and Pagination
+
+The application implements **server-side filtering and pagination** for optimal performance and accurate data handling:
+
+#### Implementation Strategy
+- **Backend Filtering**: All filters are applied at the database level using MongoDB queries before pagination
+- **Accurate Counts**: Total records and page counts reflect filtered results, not entire collections
+- **Centralized State Management**: Filter state is managed within custom hooks, ensuring consistency across components
+- **Automatic Pagination Reset**: When filters change, pagination automatically resets to page 1
+
+#### Filtered Endpoints
+1. **Blood Donation Requests** (`GET /api/request`)
+   - Query Parameter: `status` (pending, inprogress, done, canceled)
+   - Used in: All Requests page and Dashboard All Requests page
+
+2. **User Management** (`GET /api/user`)
+   - Query Parameter: `status` (active, blocked)
+   - Used in: Admin All Users page
+
+#### Custom Hooks
+- `useRequests()` - Manages request fetching with status filtering
+- `useUsers()` - Manages user fetching with status filtering
+- Both hooks return pagination state and filter handlers
+
+#### Example Request Flow
+```
+User selects filter → Hook updates status state → Query key changes 
+→ React Query invalidates cache → API called with filter parameter
+→ MongoDB applies filter before pagination → Only filtered records counted
+→ Component renders accurate total and page numbers
+```
 
 ### Folder Structure
 
@@ -89,7 +122,7 @@ server/
 
 ### Blood Donation Requests
 - `POST /api/requests` - Create blood donation request (201)
-- `GET /api/requests` - Get all donation requests (200)
+- `GET /api/requests` - Get all donation requests with pagination (200)
 - `GET /api/requests/user` - Get current user's requests (200)
 - `GET /api/requests/:id` - Get request by ID (200)
 - `PUT /api/requests/:id` - Update donation request (200)
