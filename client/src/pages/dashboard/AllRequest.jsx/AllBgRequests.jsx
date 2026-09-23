@@ -110,7 +110,7 @@ const AllBgRequests = () => {
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="bg-red-600 px-4 md:px-6 py-4">
           <h2 className="text-lg md:text-xl font-bold text-white">
-            {requests.length}{" "}
+            {totalRequests}{" "}
             {requests.length === 1 ? "Request" : "Requests"} Found
           </h2>
         </div>

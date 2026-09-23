@@ -37,34 +37,55 @@ A MERN stack blood donation platform that connects donors with recipients, built
 
 ### Filtering and Pagination
 
-The application implements **server-side filtering and pagination** for optimal performance and accurate data handling:
+The application implements **server-side filtering and pagination** with URL query parameters for shareable, bookmarkable filtered views:
 
 #### Implementation Strategy
 - **Backend Filtering**: All filters are applied at the database level using MongoDB queries before pagination
+- **URL State Management**: Filter and pagination state persists in URL query parameters (`?page=X&status=Y`)
 - **Accurate Counts**: Total records and page counts reflect filtered results, not entire collections
 - **Centralized State Management**: Filter state is managed within custom hooks, ensuring consistency across components
 - **Automatic Pagination Reset**: When filters change, pagination automatically resets to page 1
 
-#### Filtered Endpoints
-1. **Blood Donation Requests** (`GET /api/request`)
-   - Query Parameter: `status` (pending, inprogress, done, canceled)
-   - Used in: All Requests page and Dashboard All Requests page
+#### Filtered Endpoints with URL Parameters
+1. **Blood Donation Requests** (`GET /api/request?page=X&status=Y`)
+   - Query Parameters:
+     - `page` - Page number (default: 1)
+     - `status` - Filter by status: pending, inprogress, done, canceled
+   - Used in: 
+     - All Requests page (`/all-requests?page=1&status=pending`)
+     - Dashboard All Requests page (`/dashboard/all-requests?page=1&status=inprogress`)
 
-2. **User Management** (`GET /api/user`)
-   - Query Parameter: `status` (active, blocked)
-   - Used in: Admin All Users page
+2. **User Management** (`GET /api/user?page=X&status=Y`)
+   - Query Parameters:
+     - `page` - Page number (default: 1)
+     - `status` - Filter by status: active, blocked
+   - Used in: Admin All Users page (`/dashboard/all-users?page=1&status=active`)
 
 #### Custom Hooks
-- `useRequests()` - Manages request fetching with status filtering
-- `useUsers()` - Manages user fetching with status filtering
-- Both hooks return pagination state and filter handlers
+- `useRequests()` - Manages request fetching with status filtering using URL params
+- `useUsers()` - Manages user fetching with status filtering using URL params
+- Both hooks use React Router's `useSearchParams` hook to sync state with URL
 
-#### Example Request Flow
+#### Key Features
+✅ **Shareable URLs** - Share filtered views with colleagues (e.g., `/all-requests?status=pending&page=2`)  
+✅ **Browser History** - Back/forward buttons work naturally with filter changes  
+✅ **Bookmarkable Filters** - Save specific filtered views as bookmarks  
+✅ **Server-Side Efficiency** - Only filtered records are transferred and counted  
+✅ **Consistent Experience** - Page refresh maintains current filter and page state
+
+#### Example URL Flow
 ```
-User selects filter → Hook updates status state → Query key changes 
-→ React Query invalidates cache → API called with filter parameter
-→ MongoDB applies filter before pagination → Only filtered records counted
-→ Component renders accurate total and page numbers
+User clicks "Pending" filter
+  ↓
+Hook calls setStatus("pending")
+  ↓
+URL updates to: ?page=1&status=pending
+  ↓
+React Query's queryKey changes → API called with filter
+  ↓
+MongoDB applies filter → Returns only pending requests
+  ↓
+Component renders with accurate counts and pagination
 ```
 
 ### Folder Structure

@@ -263,9 +263,8 @@ const AllRequest = () => {
         {!isLoading && requests.length > 0 && (
           <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
             <p className="text-sm text-gray-600">
-              Showing{" "}
-              <span className="font-semibold">{requests.length}</span> of{" "}
-              <span className="font-semibold">{totalRequests}</span> total
+              Showing <span className="font-semibold">{requests.length}</span>{" "}
+              of <span className="font-semibold">{totalRequests}</span> total
               requests
             </p>
           </div>

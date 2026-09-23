@@ -1,11 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import useAxiosPublic from "./useAxiosPublic";
 
 const useRequests = () => {
   const axiosPublic = useAxiosPublic();
-  const [page, setPage] = useState(1);
-  const [status, setStatus] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Get page and status from URL, with defaults
+  const page = parseInt(searchParams.get("page")) || 1;
+  const status = searchParams.get("status") || "";
 
   const {
     data = [],
@@ -23,9 +26,15 @@ const useRequests = () => {
     },
   });
 
+  const setPage = (newPage) => {
+    searchParams.set("page", newPage);
+    setSearchParams(searchParams);
+  };
+
   const handleStatusChange = (value) => {
-    setStatus(value);
-    setPage(1);
+    searchParams.set("status", value);
+    searchParams.set("page", 1); 
+    setSearchParams(searchParams);
   };
 
   return {
