@@ -18,7 +18,7 @@ router.post("/blogs", verifyToken, createBlog);
 router.get("/blogs", verifyToken, getAllBlogs);
 
 // Get published blogs
-router.get("/showBlogs", getPublishedBlogs);
+router.get("/show-blogs", getPublishedBlogs);
 
 // Get blog by ID
 router.get("/blog/:id", verifyToken, getBlogById);
