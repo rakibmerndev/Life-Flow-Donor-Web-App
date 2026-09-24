@@ -14,7 +14,6 @@ const {
   activateUser,
   deleteUser,
   searchDonors,
-  getAllSearchedUsers,
 } = require("../controllers/userController");
 
 // Create user
@@ -47,10 +46,8 @@ router.patch("/users/active/:id", verifyToken, verifyAdmin, activateUser);
 // Delete user
 router.delete("/user/delete/:id", verifyToken, verifyAdmin, deleteUser);
 
-// Search donors
+// Search donors (with optional filters for bloodGroup, district, upazila)
+// Returns all donors if no filters provided, or filtered donors if filters provided
 router.get("/search", searchDonors);
-
-// Get all users for search
-router.get("/searchedUser", getAllSearchedUsers);
 
 module.exports = router;

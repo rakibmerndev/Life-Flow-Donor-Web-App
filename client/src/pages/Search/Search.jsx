@@ -3,35 +3,73 @@ import { Stack } from "@mui/system";
 import { useState } from "react";
 import { Helmet } from "react-helmet";
 import { useForm } from "react-hook-form";
+import { useSearchParams } from "react-router-dom";
 import useArea from "../../hooks/useArea.js";
-import useAxiosPublic from "../../hooks/useAxiosPublic.js";
 import useSearchedUser from "../../hooks/useSearchedUser.js";
 import { getDistrictName, getUpazilaName } from "../../lib/getLocationName.js";
+import { getPageNumbers } from "../../lib/getPageNumbers.js";
 
 const Search = () => {
-  const [searchedUser, setSearchedUser] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [userNumber, setUserNumber] = useState(false);
 
-  const { users, isLoading } = useSearchedUser();
-  const { register, handleSubmit } = useForm();
+  // Get filter values from URL
+  const urlBloodGroup = searchParams.get("bloodGroup") || "";
+  const urlDistrict = searchParams.get("district") || "";
+  const urlUpazila = searchParams.get("upazila") || "";
+
+
+  const {
+    users,
+    isLoading,
+    currentPage,
+    setPage,
+    totalDonors,
+    totalPages,
+  } = useSearchedUser();
+
+  const { register, handleSubmit, setValue } = useForm({
+    defaultValues: {
+      bloodGroup: urlBloodGroup,
+      district: urlDistrict,
+      upazila: urlUpazila,
+    },
+  });
   const { districts, upazilas, selectedDistrict, setSelectedDistrict } =
     useArea();
-  const axiosPublic = useAxiosPublic();
+
+  const pageNumbers = getPageNumbers(totalPages);
 
   const onSubmit = async (data) => {
     const requestData = {
-      bloodGroup: data.bloodGroup,
-      upazila: getUpazilaName(data.upazila, upazilas),
-      district: getDistrictName(data.district, districts),
+      bloodGroup: data.bloodGroup || "",
+      upazila: getUpazilaName(data.upazila, upazilas) || "",
+      district: getDistrictName(data.district, districts) || "",
     };
 
-    const res = await axiosPublic.get("/search", { params: requestData });
-    if (res.data.length == 0) {
+
+    const params = new URLSearchParams();
+    params.set("page", 1);
+    if (requestData.bloodGroup) params.append("bloodGroup", requestData.bloodGroup);
+    if (requestData.district) params.append("district", requestData.district);
+    if (requestData.upazila) params.append("upazila", requestData.upazila);
+    setSearchParams(params);
+
+
+    if (users.length === 0 && (requestData.bloodGroup || requestData.district || requestData.upazila)) {
       setUserNumber(true);
     } else {
       setUserNumber(false);
     }
-    setSearchedUser(res.data);
+  };
+
+  const handleClearFilters = () => {
+    setSearchParams(new URLSearchParams());
+    setUserNumber(false);
+    setSelectedDistrict("");
+    setValue("bloodGroup", "");
+    setValue("district", "");
+    setValue("upazila", "");
   };
 
   return (
@@ -119,26 +157,35 @@ const Search = () => {
               </div>
             </div>
 
-            {/* Search Button */}
-            <div className="pt-4">
+            {/* Search and Clear Buttons */}
+            <div className="pt-4 flex gap-4">
               <button
                 type="submit"
-                className="w-full md:w-auto px-8 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white font-semibold transition-colors"
+                className="px-8 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white font-semibold transition-colors"
               >
                 Search Donors
               </button>
+              {(urlBloodGroup || urlDistrict || urlUpazila) && (
+                <button
+                  type="button"
+                  onClick={handleClearFilters}
+                  className="px-8 py-2 rounded-md bg-gray-400 hover:bg-gray-500 text-white font-semibold transition-colors"
+                >
+                  Clear Filters
+                </button>
+              )}
             </div>
           </form>
         </div>
 
         {/* Search Results Section */}
-        {searchedUser.length > 0 && (
+        {users.length > 0 && (urlBloodGroup || urlDistrict || urlUpazila) && (
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Search Results ({searchedUser.length})
+              Search Results ({users.length})
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {searchedUser.map((searched) => (
+              {users.map((searched) => (
                 <div
                   key={searched._id}
                   className="bg-white rounded-lg shadow-md p-6 border-l-4 border-red-600"
@@ -173,7 +220,7 @@ const Search = () => {
         )}
 
         {/* No Results Message */}
-        {userNumber && searchedUser.length === 0 && (
+        {userNumber && users.length === 0 && (urlBloodGroup || urlDistrict || urlUpazila) && (
           <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg mb-8">
             <p className="text-lg font-semibold text-yellow-800 text-center">
               😔 Sorry, no donors found matching your search criteria. Please
@@ -188,7 +235,7 @@ const Search = () => {
             <h2 className="text-lg md:text-xl font-bold text-white">
               {isLoading
                 ? "Loading All Donors..."
-                : `All Available Donors (${users.length})`}
+                : `All Available Donors (${totalDonors})`}
             </h2>
           </div>
 
@@ -307,12 +354,47 @@ const Search = () => {
           {!isLoading && users.length > 0 && (
             <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
               <p className="text-sm text-gray-600">
-                Total Donors Available:{" "}
-                <span className="font-semibold">{users.length}</span>
+                Showing <span className="font-semibold">{users.length}</span> of{" "}
+                <span className="font-semibold">{totalDonors}</span> total donors
               </p>
             </div>
           )}
         </div>
+
+        {/* Pagination Buttons */}
+        {totalPages > 1 && (
+          <div className="max-w-7xl mx-auto mt-8 flex justify-center gap-2 flex-wrap">
+            <button
+              onClick={() => setPage(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold transition-colors"
+            >
+              Previous
+            </button>
+
+            {pageNumbers.map((num) => (
+              <button
+                key={num}
+                onClick={() => setPage(num)}
+                className={`px-4 py-2 rounded-md font-semibold transition-colors ${
+                  currentPage === num
+                    ? "bg-red-600 text-white"
+                    : "bg-gray-200 text-gray-900 hover:bg-gray-300"
+                }`}
+              >
+                {num}
+              </button>
+            ))}
+
+            <button
+              onClick={() => setPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold transition-colors"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

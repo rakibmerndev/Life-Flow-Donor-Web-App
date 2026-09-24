@@ -189,11 +189,19 @@ const deleteUser = async (req, res) => {
   }
 };
 
-// Search donors
+// Search donors (with optional filters and pagination)
 const searchDonors = async (req, res) => {
   try {
     const usersCollection = req.app.locals.usersCollection;
-    const queryParams = req.query;
+    const { bloodGroup, district, upazila, page } = req.query;
+    const limit = 10;
+    const skip = (page - 1) * limit;
+
+
+    const query = {};
+    if (bloodGroup) query.bloodGroup = bloodGroup;
+    if (district) query.district = district;
+    if (upazila) query.upazila = upazila;
 
     const sortOptions = {
       bloodGroup: 1,
@@ -201,29 +209,17 @@ const searchDonors = async (req, res) => {
       upazila: 1,
     };
 
-    const criteria = {
-      bloodGroup: queryParams.bloodGroup,
-      district: queryParams.district,
-      upazila: queryParams.upazila,
-    };
+    const totalDonors = await usersCollection.countDocuments(query);
+    const totalPages = Math.ceil(totalDonors / limit);
 
-    const donor = await usersCollection
-      .find(criteria, { projection: { avatarImage: 0, status: 0, role: 0 } })
+    const donors = await usersCollection
+      .find(query, { projection: { avatarImage: 0, status: 0, role: 0 } })
       .sort(sortOptions)
+      .skip(skip)
+      .limit(limit)
       .toArray();
-    res.status(200).send(donor);
-  } catch (error) {
-    res.status(500).send({ message: error.message });
-  }
-};
 
-// Get all users (for search)
-const getAllSearchedUsers = async (req, res) => {
-  try {
-    const usersCollection = req.app.locals.usersCollection;
-    const result = await usersCollection
-      .find({}, { projection: { avatarImage: 0, status: 0, role: 0 } })
-      .toArray();
+    const result = { page: parseInt(page) || 1, totalDonors, totalPages, donors };
     res.status(200).send(result);
   } catch (error) {
     res.status(500).send({ message: error.message });
@@ -242,5 +238,4 @@ module.exports = {
   activateUser,
   deleteUser,
   searchDonors,
-  getAllSearchedUsers,
 };
