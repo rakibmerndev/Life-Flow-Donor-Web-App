@@ -26,7 +26,8 @@ import AdminRoute from "./AdminRoute";
 import PrivateRoute from "./PrivateRoute";
 import BlogDetails from "../pages/BlogDetails/BlogDetails";
 
-const Routers = createBrowserRouter([
+const Routers = createBrowserRouter(
+  [
   {
     path: "/",
     element: <Main></Main>,
@@ -162,6 +163,11 @@ const Routers = createBrowserRouter([
       },
     ],
   },
-]);
+],
+{
+  future: {
+    v7_startTransition: true,
+  },
+});
 
 export default Routers;

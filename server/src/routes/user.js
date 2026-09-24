@@ -44,7 +44,7 @@ router.patch("/users/block/:id", verifyToken, verifyAdmin, blockUser);
 router.patch("/users/active/:id", verifyToken, verifyAdmin, activateUser);
 
 // Delete user
-router.delete("/user/delete/:id", verifyToken, verifyAdmin, deleteUser);
+router.delete("/users/delete/:id", verifyToken, verifyAdmin, deleteUser);
 
 // Search donors (with optional filters for bloodGroup, district, upazila)
 // Returns all donors if no filters provided, or filtered donors if filters provided

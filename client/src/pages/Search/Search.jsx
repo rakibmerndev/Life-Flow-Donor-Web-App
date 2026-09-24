@@ -178,46 +178,7 @@ const Search = () => {
           </form>
         </div>
 
-        {/* Search Results Section */}
-        {users.length > 0 && (urlBloodGroup || urlDistrict || urlUpazila) && (
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Search Results ({users.length})
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {users.map((searched) => (
-                <div
-                  key={searched._id}
-                  className="bg-white rounded-lg shadow-md p-6 border-l-4 border-red-600"
-                >
-                  <h3 className="text-lg font-bold text-gray-900 mb-3">
-                    {searched?.name}
-                  </h3>
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Blood Group:</span>
-                      <span className="inline-block px-3 py-1 rounded-full bg-red-100 text-red-800 font-semibold text-sm">
-                        {searched?.bloodGroup}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Email:</span>
-                      <span className="text-gray-900 font-medium">
-                        {searched?.email}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Location:</span>
-                      <span className="text-gray-900 font-medium">
-                        {searched?.upazila}, {searched?.district}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+      
 
         {/* No Results Message */}
         {userNumber && users.length === 0 && (urlBloodGroup || urlDistrict || urlUpazila) && (

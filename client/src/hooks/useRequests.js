@@ -6,7 +6,6 @@ const useRequests = () => {
   const axiosPublic = useAxiosPublic();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Get page and status from URL, with defaults
   const page = parseInt(searchParams.get("page")) || 1;
   const status = searchParams.get("status") || "";
 
@@ -33,7 +32,7 @@ const useRequests = () => {
 
   const handleStatusChange = (value) => {
     searchParams.set("status", value);
-    searchParams.set("page", 1); 
+    searchParams.set("page", 1);
     setSearchParams(searchParams);
   };
 

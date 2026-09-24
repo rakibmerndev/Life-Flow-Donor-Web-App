@@ -47,6 +47,16 @@ const AllBgRequests = () => {
     }
   };
 
+  const handleStatusUpdate = async (id, newStatus) => {
+    const data = {
+      donationStatus: newStatus,
+    };
+    const res = await axiosSecure.patch(`/status/${id}`, data);
+    if (res.data.modifiedCount > 0) {
+      refetch();
+    }
+  };
+
   const handleDelete = (id) => {
     Swal.fire({
       title: "Are you sure?",
@@ -201,6 +211,21 @@ const AllBgRequests = () => {
                       </div>
                     )}
 
+                    {/* Status Change Dropdown */}
+                    <div>
+                      <p className="text-xs text-gray-600 mb-1">Change Status</p>
+                      <select
+                        value={request.donationStatus}
+                        onChange={(e) => handleStatusUpdate(request._id, e.target.value)}
+                        className="w-full py-1.5 px-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="inprogress">In Progress</option>
+                        <option value="done">Done</option>
+                        <option value="canceled">Canceled</option>
+                      </select>
+                    </div>
+
                     {/* Actions */}
                     <div className="flex flex-wrap gap-2 pt-2">
                       {request?.donationStatus === "inprogress" && (
@@ -305,22 +330,16 @@ const AllBgRequests = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-sm">
-                        <span
-                          className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
-                            request.donationStatus === "pending"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : request.donationStatus === "inprogress"
-                                ? "bg-blue-100 text-blue-800"
-                                : request.donationStatus === "done"
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-red-100 text-red-800"
-                          }`}
+                        <select
+                          value={request.donationStatus}
+                          onChange={(e) => handleStatusUpdate(request._id, e.target.value)}
+                          className="py-1.5 px-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600"
                         >
-                          {request.donationStatus === "inprogress"
-                            ? "In Progress"
-                            : request.donationStatus.charAt(0).toUpperCase() +
-                              request.donationStatus.slice(1)}
-                        </span>
+                          <option value="pending">Pending</option>
+                          <option value="inprogress">In Progress</option>
+                          <option value="done">Done</option>
+                          <option value="canceled">Canceled</option>
+                        </select>
                       </td>
                       <td className="px-6 py-4 text-sm">
                         {request?.donationStatus === "inprogress" ? (

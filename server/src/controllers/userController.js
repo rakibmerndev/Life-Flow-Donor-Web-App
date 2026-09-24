@@ -182,6 +182,7 @@ const deleteUser = async (req, res) => {
     const usersCollection = req.app.locals.usersCollection;
     const id = req.params.id;
     const query = { _id: new ObjectId(id) };
+    console.log(id, 'from delete user')
     const result = await usersCollection.deleteOne(query);
     res.status(200).send(result);
   } catch (error) {

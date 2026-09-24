@@ -105,13 +105,22 @@ const updateRequestStatus = async (req, res) => {
     const id = req.params.id;
     const query = { _id: new ObjectId(id) };
     const body = req.body;
+
+    // Allow updating just status, or status with donor info
     const updatedRequest = {
       $set: {
-        donorName: body.donorName,
-        donorEmail: body.donorEmail,
         donationStatus: body.donationStatus,
       },
     };
+
+    // If donor info is provided, include it
+    if (body.donorName) {
+      updatedRequest.$set.donorName = body.donorName;
+    }
+    if (body.donorEmail) {
+      updatedRequest.$set.donorEmail = body.donorEmail;
+    }
+
     const result = await requestsCollection.updateOne(query, updatedRequest);
     res.status(200).send(result);
   } catch (error) {
