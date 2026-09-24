@@ -12,7 +12,7 @@ const Navbar = () => {
   const { user, logout } = useAuth();
   const [isAdmin] = useAdmin();
   const { currentUser } = useCurrentUser();
-  const role = currentUser[0]?.role;
+  const role = currentUser?.role;
   const [visible, setVisible] = useState(false);
 
   const handleDropDown = () => {

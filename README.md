@@ -15,6 +15,7 @@ A MERN stack blood donation platform that connects donors with recipients, built
 - Password visibility toggle in login/signup forms
 - Responsive design with professional UI/UX
 - Advanced filtering and pagination for requests and users
+- Blood group validation on donation requests with disabled button state and helpful mismatch message
 
 ## Tech Stack
 

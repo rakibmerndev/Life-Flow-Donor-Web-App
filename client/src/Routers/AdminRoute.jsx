@@ -16,7 +16,7 @@ const AdminRoute = ({ children }) => {
       <span className="loading loading-spinner min-h-screen flex justify-center items-center mx-auto loading-lg"></span>
     );
   }
-  if ((user && isAdmin) || currentUser[0]?.role === "volunteer") {
+  if ((user && isAdmin) || currentUser?.role === "volunteer") {
     return children;
   }
   return <Navigate to="/login" state={{ from: location }} replace></Navigate>;

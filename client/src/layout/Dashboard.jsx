@@ -33,7 +33,7 @@ function Dashboard() {
   };
 
   const { currentUser } = useCurrentUser();
-  const userRole = currentUser[0]?.role;
+  const userRole = currentUser?.role;
 
   const drawer = (
     <div>

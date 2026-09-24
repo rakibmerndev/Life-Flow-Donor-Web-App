@@ -49,7 +49,7 @@ const getUserProfile = async (req, res) => {
     if (req.query?.email) {
       query = { email: req.query.email };
     }
-    const result = await usersCollection.find(query).toArray();
+     const result = await usersCollection.findOne(query);
     res.status(200).send(result);
   } catch (error) {
     res.status(500).send({ message: error.message });

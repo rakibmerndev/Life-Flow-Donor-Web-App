@@ -110,8 +110,8 @@ const AllBgRequests = () => {
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="bg-red-600 px-4 md:px-6 py-4">
           <h2 className="text-lg md:text-xl font-bold text-white">
-            {totalRequests}{" "}
-            {requests.length === 1 ? "Request" : "Requests"} Found
+            {totalRequests} {requests.length === 1 ? "Request" : "Requests"}{" "}
+            Found
           </h2>
         </div>
 
@@ -219,7 +219,7 @@ const AllBgRequests = () => {
                           </button>
                         </>
                       )}
-                      {currentUser[0]?.role === "admin" && (
+                      {currentUser?.role === "admin" && (
                         <>
                           <Link to={`/dashboard/update/${request._id}`}>
                             <button className="px-3 py-1.5 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors">
@@ -356,7 +356,7 @@ const AllBgRequests = () => {
                               </button>
                             </>
                           )}
-                          {currentUser[0]?.role === "admin" && (
+                          {currentUser?.role === "admin" && (
                             <>
                               <Link to={`/dashboard/update/${request._id}`}>
                                 <button className="px-3 py-1 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors">
@@ -396,9 +396,8 @@ const AllBgRequests = () => {
         {requests.length > 0 && (
           <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
             <p className="text-sm text-gray-600">
-              Showing{" "}
-              <span className="font-semibold">{requests.length}</span> of{" "}
-              <span className="font-semibold">{totalRequests}</span> total
+              Showing <span className="font-semibold">{requests.length}</span>{" "}
+              of <span className="font-semibold">{totalRequests}</span> total
               requests
             </p>
           </div>

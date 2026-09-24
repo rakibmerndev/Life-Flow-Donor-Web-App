@@ -4,14 +4,18 @@ import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAuth from "../../../hooks/useAuth.js";
 import useAxiosSecure from "../../../hooks/useAxiosSecure.js";
+import useCurrentUser from "../../../hooks/useCurrentUser.js";
 import useParticularRequest from "../../../hooks/useParticularRequest.js";
 
 const RequestDetails = () => {
   const { user } = useAuth();
+
   const { requests, refetch, isLoading } = useParticularRequest();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const params = useParams();
   const axiosSecure = useAxiosSecure();
+
+  const { currentUser } = useCurrentUser();
 
   const handleConfirm = async () => {
     const donorName = user?.displayName;
@@ -255,7 +259,7 @@ const RequestDetails = () => {
               <div className="mt-2">
                 <span
                   className={`inline-block px-4 py-2 rounded-full text-sm font-semibold ${getStatusColor(
-                    requests?.donationStatus
+                    requests?.donationStatus,
                   )}`}
                 >
                   {getStatusLabel(requests?.donationStatus)}
@@ -297,12 +301,29 @@ const RequestDetails = () => {
 
         {/* Donate Button */}
         {requests?.donationStatus === "pending" && (
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="w-full py-3 px-6 rounded-md bg-red-600 hover:bg-red-700 text-white font-bold text-lg transition-colors mb-8"
-          >
-            Donate Now
-          </button>
+          <div className="mb-8">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              disabled={requests.requiredBloodGroup !== currentUser?.bloodGroup}
+              className={`w-full py-3 px-6 rounded-md font-bold text-lg transition-colors ${
+                requests.requiredBloodGroup !== currentUser?.bloodGroup
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              }`}
+            >
+              Donate Now
+            </button>
+            {requests.requiredBloodGroup !== currentUser?.bloodGroup && (
+              <div className="mt-3 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+                <p className="text-sm text-yellow-800 font-medium">
+                  ⚠️ Blood group mismatch
+                </p>
+                <p className="text-sm text-yellow-700 mt-1">
+                  Required blood group: <span className="font-semibold">{requests.requiredBloodGroup}</span> | Your blood group: <span className="font-semibold">{currentUser?.bloodGroup}</span>
+                </p>
+              </div>
+            )}
+          </div>
         )}
       </div>
 

@@ -119,7 +119,9 @@ const ContentManagement = () => {
                   <div className="space-y-3">
                     {/* Index and Status */}
                     <div className="flex justify-between items-start">
-                      <span className="text-sm font-bold text-gray-900">#{index + 1}</span>
+                      <span className="text-sm font-bold text-gray-900">
+                        #{index + 1}
+                      </span>
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
                           blog.status === "published"
@@ -135,13 +137,15 @@ const ContentManagement = () => {
                     {/* Blog Title */}
                     <div>
                       <p className="text-xs text-gray-600 mb-1">Blog Title</p>
-                      <p className="font-semibold text-gray-900 line-clamp-2">{blog.title}</p>
+                      <p className="font-semibold text-gray-900 line-clamp-2">
+                        {blog.title}
+                      </p>
                     </div>
 
                     {/* Actions */}
                     <div className="flex flex-wrap gap-2 pt-2">
                       {blog.status === "draft" &&
-                        currentUser[0]?.role === "admin" && (
+                        currentUser?.role === "admin" && (
                           <button
                             onClick={() => handlePublish(blog._id)}
                             className="px-3 py-1.5 rounded-md bg-green-600 hover:bg-green-700 text-white text-xs font-semibold transition-colors flex-1 min-w-fit"
@@ -149,14 +153,14 @@ const ContentManagement = () => {
                             Publish
                           </button>
                         )}
-                      {currentUser[0]?.role === "admin" && (
+                      {currentUser?.role === "admin" && (
                         <Link to={`/details/${blog._id}`}>
                           <button className="px-3 py-1.5 rounded-md bg-gray-600 hover:bg-gray-700 text-white text-xs font-semibold transition-colors w-full">
                             View
                           </button>
                         </Link>
                       )}
-                      {currentUser[0]?.role === "admin" && (
+                      {currentUser?.role === "admin" && (
                         <button
                           onClick={() => handleDelete(blog._id)}
                           className="px-3 py-1.5 rounded-md bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition-colors flex-1 min-w-fit"
@@ -216,7 +220,7 @@ const ContentManagement = () => {
                       <td className="px-6 py-4 text-sm">
                         <div className="flex gap-2 flex-wrap">
                           {blog.status === "draft" &&
-                            currentUser[0]?.role === "admin" && (
+                            currentUser?.role === "admin" && (
                               <button
                                 onClick={() => handlePublish(blog._id)}
                                 className="px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 text-white text-xs font-semibold transition-colors"
@@ -224,7 +228,7 @@ const ContentManagement = () => {
                                 Publish
                               </button>
                             )}
-                          {currentUser[0]?.role === "admin" && (
+                          {currentUser?.role === "admin" && (
                             <button
                               onClick={() => handleDelete(blog._id)}
                               className="px-4 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition-colors"
@@ -232,7 +236,7 @@ const ContentManagement = () => {
                               Delete
                             </button>
                           )}
-                          {currentUser[0]?.role === "admin" && (
+                          {currentUser?.role === "admin" && (
                             <Link to={`/details/${blog._id}`}>
                               <button className="px-4 py-2 rounded-md bg-gray-600 hover:bg-gray-700 text-white text-xs font-semibold transition-colors">
                                 View

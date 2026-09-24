@@ -17,7 +17,7 @@ const useCurrentUser = () => {
       }
       return []; 
     },
-    enabled: !!user, 
+    enabled: !!user,
   });
 
   return { currentUser, refetch };

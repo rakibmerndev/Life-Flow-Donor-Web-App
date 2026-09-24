@@ -68,7 +68,7 @@ const CreateRequest = () => {
   };
 
   const { currentUser } = useCurrentUser();
-  const status = currentUser[0]?.status;
+  const status = currentUser?.status;
 
   return (
     <div className="bg-gray-50 min-h-screen p-4 md:p-8">
